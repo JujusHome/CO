@@ -22,6 +22,7 @@
             --accent-green: #2ec4b6;
             --accent-blue: #3a86ff;
             --accent-red: #ef476f;
+            --accent-purple: #9b5de5;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b8;
             --text-muted: #6b6b80;
@@ -100,27 +101,51 @@
             display: grid; grid-template-columns: 120px 1fr 140px; gap: 12px; align-items: center;
             background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md);
         }
-        .parcours-label { font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 1rem; color: var(--text-secondary); }
-        .type-toggle { display: flex; gap: 8px; }
-        .type-btn {
-            flex: 1; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
-            background: var(--bg-card); color: var(--text-secondary); cursor: pointer; font-weight: 600; transition: all 0.2s ease;
+        .parcours-label { 
+            font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace; 
+            font-size: 1rem; color: var(--text-secondary); 
         }
-        .type-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        
+        .type-select {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+        .type-select:focus { outline: none; border-color: var(--accent-blue); }
+        
         .beacons-input { display: flex; align-items: center; gap: 8px; }
         .beacons-input input {
             width: 70px; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
-            background: var(--bg-card); color: var(--text-primary); text-align: center;
+            background: var(--bg-card); color: var(--text-primary); text-align: center; font-size: 1rem;
+        }
+        .beacons-input input:disabled { opacity: 0.4; }
+
+        .no-parcours { color: var(--text-muted); font-style: italic; }
+
+        .buttons-row {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 600px;
         }
 
-        .start-btn {
-            width: 100%; max-width: 400px; padding: 18px 36px;
+        .start-btn, .resume-btn, .clear-btn {
+            flex: 1; min-width: 180px; padding: 18px 36px;
             font-family: Impact, 'Arial Black', Haettenschweiler, sans-serif;
-            font-size: 1.6rem; letter-spacing: 3px;
-            background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+            font-size: 1.4rem; letter-spacing: 3px;
             color: white; border: none; border-radius: var(--radius-lg); cursor: pointer; transition: all 0.3s ease;
         }
+        .start-btn { background: linear-gradient(135deg, var(--accent-orange), var(--accent-red)); }
         .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .resume-btn { background: linear-gradient(135deg, var(--accent-green), #20a89a); }
+        .clear-btn { background: linear-gradient(135deg, var(--accent-red), #d63a5c); font-size: 1.1rem; }
 
         .race-screen { display: none; }
         .race-screen.active { display: block; }
@@ -141,8 +166,9 @@
         .btn-stop-all { background: linear-gradient(135deg, var(--accent-red), #d63a5c); color: white; }
         .btn-export { background: linear-gradient(135deg, var(--accent-blue), #2d6ed9); color: white; }
         .btn-reset { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-back { background: linear-gradient(135deg, var(--accent-purple), #7b4cc4); color: white; }
 
-        .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
 
         .group-card {
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
@@ -163,6 +189,32 @@
         .group-status { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; white-space: nowrap; }
         .status-waiting { background: rgba(107, 107, 128, 0.3); color: var(--text-muted); }
         .status-running { background: rgba(46, 196, 182, 0.2); color: var(--accent-green); }
+        .status-finished { background: rgba(255, 200, 87, 0.2); color: var(--accent-yellow); }
+
+        .current-parcours-indicator {
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.2), rgba(155, 93, 229, 0.2));
+            border: 1px solid var(--accent-blue);
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+        .current-parcours-indicator.hidden { display: none; }
+        .current-parcours-indicator .pulse-dot {
+            width: 10px; height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse-dot 1s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
 
         .timer-display {
             font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
@@ -171,6 +223,34 @@
             background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 12px; letter-spacing: 2px; border: 1px solid var(--border-color);
         }
         .timer-display.running { color: var(--accent-green); border-color: var(--accent-green); }
+
+        .parcours-buttons {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; margin-bottom: 12px;
+        }
+        .parcours-btn {
+            padding: 12px 8px; border: 2px solid var(--border-color); border-radius: var(--radius-md);
+            background: var(--bg-secondary); color: var(--text-primary); font-weight: 700; font-size: 0.85rem;
+            cursor: pointer; transition: all 0.2s ease; text-align: center; position: relative;
+        }
+        .parcours-btn:hover:not(.done):not(:disabled) { 
+            border-color: var(--accent-orange); background: rgba(255, 107, 53, 0.1); 
+        }
+        .parcours-btn.done { 
+            background: rgba(46, 196, 182, 0.2); border-color: var(--accent-green); color: var(--accent-green);
+            cursor: default;
+        }
+        .parcours-btn.active {
+            border-color: var(--accent-blue); 
+            background: rgba(58, 134, 255, 0.3);
+            box-shadow: 0 0 15px rgba(58, 134, 255, 0.4);
+            animation: pulse-active 2s ease-in-out infinite;
+        }
+        @keyframes pulse-active {
+            0%, 100% { box-shadow: 0 0 15px rgba(58, 134, 255, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(58, 134, 255, 0.6); }
+        }
+        .parcours-btn .time { font-size: 0.75rem; margin-top: 4px; opacity: 0.8; }
+        .parcours-btn .type-icon { font-size: 0.7rem; opacity: 0.7; }
 
         .total-time {
             background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 200, 87, 0.1));
@@ -187,29 +267,39 @@
         }
         .btn-toggle { background: linear-gradient(135deg, var(--accent-green), #20a89a); color: white; }
         .btn-toggle.stop { background: linear-gradient(135deg, var(--accent-red), #d63a5c); }
-
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-            display: none; align-items: center; justify-content: center; z-index: 2000;
-        }
-        .modal.show { display: flex; }
-        .modal-card {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
-            width: min(600px, 92vw); padding: 18px;
-        }
-        .modal-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; color: var(--accent-yellow); }
-        .modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-bottom: 12px; }
-        .modal-btn {
-            padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
-            background: var(--bg-secondary); color: var(--text-primary); font-weight: 600; cursor: pointer;
-        }
-        .modal-btn.disabled { opacity: 0.3; cursor: not-allowed; }
-        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-toggle:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .hidden { display: none !important; }
 
-        @media (max-width: 900px) { .setup-grid { grid-template-columns: repeat(5, 1fr); } .parcours-row { grid-template-columns: 90px 1fr 120px; } }
-        @media (max-width: 600px) { .setup-grid { grid-template-columns: repeat(4, 1fr); } .groups-grid { grid-template-columns: 1fr; } .parcours-row { grid-template-columns: 1fr; } }
+        .saved-indicator {
+            position: fixed; bottom: 20px; right: 20px; padding: 10px 16px;
+            background: var(--accent-green); color: white; border-radius: var(--radius-md);
+            font-weight: 600; opacity: 0; transition: opacity 0.3s ease; z-index: 100;
+        }
+        .saved-indicator.show { opacity: 1; }
+
+        .running-count {
+            background: var(--accent-orange);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 900px) { 
+            .setup-grid { grid-template-columns: repeat(5, 1fr); } 
+            .parcours-row { grid-template-columns: 90px 1fr 100px; } 
+        }
+        @media (max-width: 600px) { 
+            .setup-grid { grid-template-columns: repeat(5, 1fr); } 
+            .groups-grid { grid-template-columns: 1fr; } 
+            .parcours-row { grid-template-columns: 1fr; gap: 8px; }
+            .buttons-row { flex-direction: column; }
+            .start-btn, .resume-btn, .clear-btn { width: 100%; }
+            .controls-bar { gap: 8px; }
+            .control-btn { padding: 12px 16px; font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
@@ -231,41 +321,42 @@
         </div>
 
         <div class="setup-card">
-            <h2 class="setup-title">Type de chaque parcours (avant la course)</h2>
+            <h2 class="setup-title">Type de chaque parcours</h2>
             <div class="parcours-config" id="parcours-config"></div>
         </div>
 
-        <button class="start-btn" id="start-btn" disabled>Démarrer la Course</button>
+        <div class="buttons-row">
+            <button class="start-btn" id="start-btn" disabled>Nouvelle Course</button>
+        </div>
+        <div class="buttons-row" id="resume-row" style="display: none;">
+            <button class="resume-btn" id="resume-btn">Reprendre la Course</button>
+            <button class="clear-btn" id="clear-btn">Effacer les Données</button>
+        </div>
     </div>
 
     <div id="race-screen" class="race-screen">
         <div class="controls-bar">
-            <button class="control-btn btn-start-all" id="start-all-btn">Démarrer tous</button>
-            <button class="control-btn btn-stop-all" id="stop-all-btn">Arrêter tous</button>
-            <button class="control-btn btn-export" id="export-btn">Exporter CSV</button>
-            <button class="control-btn btn-reset" id="reset-btn">Reset</button>
+            <button class="control-btn btn-back" id="back-btn">← Accueil</button>
+            <button class="control-btn btn-start-all" id="start-all-btn">▶ Démarrer Tous</button>
+            <button class="control-btn btn-stop-all" id="stop-all-btn">⏹ Arrêter Tous <span class="running-count" id="running-count">0</span></button>
+            <button class="control-btn btn-export" id="export-btn">📊 Exporter CSV</button>
+            <button class="control-btn btn-reset" id="reset-btn">🔄 Reset</button>
         </div>
         <div class="groups-grid" id="groups-grid"></div>
     </div>
 </div>
 
-<div class="modal" id="parcours-modal">
-    <div class="modal-card">
-        <div class="modal-title" id="modal-title">Choisir le parcours terminé</div>
-        <div class="modal-grid" id="modal-grid"></div>
-        <div class="modal-actions">
-            <button class="modal-btn" id="modal-cancel">Annuler</button>
-        </div>
-    </div>
-</div>
+<div class="saved-indicator" id="saved-indicator">✓ Sauvegardé</div>
 
 <script>
+const STORAGE_KEY = 'chronoCO_data';
+
 const state = {
     numGroups: 0,
     numParcours: 0,
     parcoursConfig: [],
     groups: [],
-    pendingStopGroupId: null
+    raceStarted: false
 };
 
 const setupScreen = document.getElementById('setup-screen');
@@ -274,12 +365,84 @@ const groupsSelector = document.getElementById('groups-selector');
 const parcoursSelector = document.getElementById('parcours-selector');
 const parcoursConfigEl = document.getElementById('parcours-config');
 const startBtn = document.getElementById('start-btn');
+const resumeBtn = document.getElementById('resume-btn');
+const clearBtn = document.getElementById('clear-btn');
+const resumeRow = document.getElementById('resume-row');
 const groupsGrid = document.getElementById('groups-grid');
+const savedIndicator = document.getElementById('saved-indicator');
+const runningCountEl = document.getElementById('running-count');
 
-const modal = document.getElementById('parcours-modal');
-const modalGrid = document.getElementById('modal-grid');
-const modalTitle = document.getElementById('modal-title');
-const modalCancel = document.getElementById('modal-cancel');
+// Types de parcours disponibles
+const PARCOURS_TYPES = [
+    { value: 'circuit', label: 'Circuit', icon: '🔄' },
+    { value: 'etoile', label: 'Étoile', icon: '⭐' },
+    { value: 'papillon', label: 'Papillon', icon: '🦋' }
+];
+
+function saveState() {
+    const dataToSave = {
+        numGroups: state.numGroups,
+        numParcours: state.numParcours,
+        parcoursConfig: state.parcoursConfig,
+        groups: state.groups.map(g => ({
+            ...g,
+            savedAt: Date.now(),
+            wasRunning: g.isRunning,
+            savedElapsed: g.isRunning ? Date.now() - g.startTime : g.elapsedTime
+        })),
+        raceStarted: state.raceStarted
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    showSavedIndicator();
+}
+
+function loadState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return false;
+    
+    try {
+        const data = JSON.parse(saved);
+        state.numGroups = data.numGroups;
+        state.numParcours = data.numParcours;
+        state.parcoursConfig = data.parcoursConfig;
+        state.raceStarted = data.raceStarted;
+        
+        state.groups = data.groups.map(g => {
+            const group = { ...g };
+            if (g.wasRunning) {
+                group.isRunning = false;
+                group.elapsedTime = g.savedElapsed;
+                group.startTime = null;
+            }
+            delete group.savedAt;
+            delete group.wasRunning;
+            delete group.savedElapsed;
+            return group;
+        });
+        
+        return true;
+    } catch (e) {
+        console.error('Erreur chargement données:', e);
+        return false;
+    }
+}
+
+function clearSavedData() {
+    localStorage.removeItem(STORAGE_KEY);
+    state.groups = [];
+    state.raceStarted = false;
+    resumeRow.style.display = 'none';
+}
+
+function showSavedIndicator() {
+    savedIndicator.classList.add('show');
+    setTimeout(() => savedIndicator.classList.remove('show'), 1500);
+}
+
+function updateRunningCount() {
+    const count = state.groups.filter(g => g.isRunning).length;
+    runningCountEl.textContent = count;
+}
 
 function initSetup() {
     for (let i = 1; i <= 25; i++) {
@@ -297,7 +460,20 @@ function initSetup() {
         btn.addEventListener('click', () => selectNumParcours(i, btn));
         parcoursSelector.appendChild(btn);
     }
+    
     renderParcoursConfig();
+    
+    if (loadState() && state.raceStarted) {
+        groupsSelector.querySelectorAll('.setup-btn').forEach((btn, idx) => {
+            if (idx + 1 === state.numGroups) btn.classList.add('selected');
+        });
+        parcoursSelector.querySelectorAll('.setup-btn').forEach((btn, idx) => {
+            if (idx + 1 === state.numParcours) btn.classList.add('selected');
+        });
+        renderParcoursConfig();
+        updateStartButton();
+        resumeRow.style.display = 'flex';
+    }
 }
 
 function selectGroups(num, btn) {
@@ -311,10 +487,17 @@ function selectNumParcours(num, btn) {
     parcoursSelector.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     state.numParcours = num;
-    state.parcoursConfig = [];
+    
+    const newConfig = [];
     for (let i = 0; i < num; i++) {
-        state.parcoursConfig.push({ type: 'circuit', beacons: 6 });
+        if (state.parcoursConfig[i]) {
+            newConfig.push(state.parcoursConfig[i]);
+        } else {
+            newConfig.push({ type: 'circuit', beacons: 6 });
+        }
     }
+    state.parcoursConfig = newConfig;
+    
     renderParcoursConfig();
     updateStartButton();
 }
@@ -322,62 +505,98 @@ function selectNumParcours(num, btn) {
 function renderParcoursConfig() {
     parcoursConfigEl.innerHTML = '';
     if (state.numParcours === 0) {
-        parcoursConfigEl.innerHTML = '<span class="no-parcours">Choisissez d’abord le nombre de parcours</span>';
+        parcoursConfigEl.innerHTML = '<span class="no-parcours">Choisissez d\'abord le nombre de parcours</span>';
         return;
     }
+    
     state.parcoursConfig.forEach((cfg, index) => {
         const row = document.createElement('div');
         row.className = 'parcours-row';
+        
+        let optionsHTML = PARCOURS_TYPES.map(t => 
+            `<option value="${t.value}" ${cfg.type === t.value ? 'selected' : ''}>${t.icon} ${t.label}</option>`
+        ).join('');
+        
+        const needsBeacons = cfg.type === 'etoile' || cfg.type === 'papillon';
+        
         row.innerHTML = `
             <div class="parcours-label">Parcours ${index + 1}</div>
-            <div class="type-toggle">
-                <button class="type-btn ${cfg.type === 'circuit' ? 'active' : ''}" data-type="circuit">Circuit</button>
-                <button class="type-btn ${cfg.type === 'etoile' ? 'active' : ''}" data-type="etoile">Étoile</button>
-            </div>
+            <select class="type-select" data-index="${index}">
+                ${optionsHTML}
+            </select>
             <div class="beacons-input">
                 <span>Balises</span>
-                <input type="number" min="1" max="50" value="${cfg.beacons}" ${cfg.type === 'circuit' ? 'disabled' : ''}>
+                <input type="number" min="1" max="50" value="${cfg.beacons}" ${!needsBeacons ? 'disabled' : ''}>
             </div>
         `;
-        const [btnCircuit, btnEtoile] = row.querySelectorAll('.type-btn');
+        
+        const select = row.querySelector('.type-select');
         const beaconsInput = row.querySelector('input');
-
-        btnCircuit.addEventListener('click', () => {
-            cfg.type = 'circuit';
-            btnCircuit.classList.add('active');
-            btnEtoile.classList.remove('active');
-            beaconsInput.disabled = true;
+        
+        select.addEventListener('change', () => {
+            cfg.type = select.value;
+            const needs = cfg.type === 'etoile' || cfg.type === 'papillon';
+            beaconsInput.disabled = !needs;
             updateStartButton();
         });
-
-        btnEtoile.addEventListener('click', () => {
-            cfg.type = 'etoile';
-            btnEtoile.classList.add('active');
-            btnCircuit.classList.remove('active');
-            beaconsInput.disabled = false;
-            updateStartButton();
-        });
-
+        
         beaconsInput.addEventListener('input', () => {
             const val = parseInt(beaconsInput.value, 10);
             cfg.beacons = isNaN(val) ? 1 : Math.max(1, val);
             updateStartButton();
         });
-
+        
         parcoursConfigEl.appendChild(row);
     });
 }
 
 function updateStartButton() {
-    const validParcours = state.parcoursConfig.every(cfg => cfg.type === 'circuit' || (cfg.type === 'etoile' && cfg.beacons >= 1));
+    const validParcours = state.parcoursConfig.every(cfg => {
+        if (cfg.type === 'circuit') return true;
+        return cfg.beacons >= 1;
+    });
     startBtn.disabled = !(state.numGroups > 0 && state.numParcours > 0 && validParcours);
 }
 
 startBtn.addEventListener('click', () => {
     initRace();
+    state.raceStarted = true;
+    saveState();
+    showRaceScreen();
+});
+
+resumeBtn.addEventListener('click', () => {
+    showRaceScreen();
+    renderGroups();
+    state.groups.forEach(group => {
+        if (group.elapsedTime > 0 && !group.isRunning) {
+            updateGroupUI(group.id);
+            updateTotalTime(group.id);
+        }
+    });
+    updateRunningCount();
+});
+
+clearBtn.addEventListener('click', () => {
+    if (confirm('Voulez-vous vraiment effacer toutes les données de la course en cours ?')) {
+        clearSavedData();
+        location.reload();
+    }
+});
+
+function showRaceScreen() {
     setupScreen.classList.add('hidden');
     raceScreen.classList.add('active');
-});
+}
+
+function showSetupScreen() {
+    raceScreen.classList.remove('active');
+    setupScreen.classList.remove('hidden');
+    
+    if (state.raceStarted && state.groups.length > 0) {
+        resumeRow.style.display = 'flex';
+    }
+}
 
 function initRace() {
     state.groups = [];
@@ -395,10 +614,17 @@ function initRace() {
             startTime: null,
             elapsedTime: 0,
             lastSplitStart: null,
+            currentParcours: null, // Parcours en cours
             parcoursData
         });
     }
     renderGroups();
+    updateRunningCount();
+}
+
+function getNextAvailableParcours(group) {
+    const idx = group.parcoursData.findIndex(p => p.time === null);
+    return idx !== -1 ? idx + 1 : null;
 }
 
 function renderGroups() {
@@ -407,31 +633,106 @@ function renderGroups() {
         const card = document.createElement('div');
         card.className = 'group-card';
         card.id = `group-${group.id}`;
+        
+        let parcoursButtonsHTML = '';
+        group.parcoursData.forEach((p, idx) => {
+            const typeInfo = PARCOURS_TYPES.find(t => t.value === p.type) || PARCOURS_TYPES[0];
+            const isDone = p.time !== null;
+            const isActive = group.isRunning && group.currentParcours === idx + 1;
+            parcoursButtonsHTML += `
+                <button class="parcours-btn ${isDone ? 'done' : ''} ${isActive ? 'active' : ''}" 
+                        data-parcours="${idx + 1}" ${isDone ? 'disabled' : ''}>
+                    <div>P${idx + 1}</div>
+                    <div class="type-icon">${typeInfo.icon}</div>
+                    <div class="time">${isDone ? formatTime(p.time) : '--:--'}</div>
+                </button>
+            `;
+        });
+        
+        const allDone = group.parcoursData.every(p => p.time !== null);
+        const currentParcoursInfo = group.currentParcours ? 
+            PARCOURS_TYPES.find(t => t.value === group.parcoursData[group.currentParcours - 1].type) : null;
+        
         card.innerHTML = `
             <div class="group-header">
                 <input class="group-name-input" value="${group.name}" />
-                <span class="group-status status-waiting">En attente</span>
+                <span class="group-status ${allDone ? 'status-finished' : group.isRunning ? 'status-running' : 'status-waiting'}">
+                    ${allDone ? 'Terminé' : group.isRunning ? 'En course' : 'En attente'}
+                </span>
             </div>
-            <div class="timer-display" id="timer-${group.id}">00:00:00</div>
+            <div class="current-parcours-indicator ${group.isRunning && group.currentParcours ? '' : 'hidden'}" id="current-indicator-${group.id}">
+                <span class="pulse-dot"></span>
+                <span>Parcours ${group.currentParcours || '-'} ${currentParcoursInfo ? currentParcoursInfo.icon : ''} en cours</span>
+            </div>
+            <div class="timer-display ${group.isRunning ? 'running' : ''}" id="timer-${group.id}">${formatTime(group.elapsedTime)}</div>
+            <div class="parcours-buttons" id="parcours-btns-${group.id}">
+                ${parcoursButtonsHTML}
+            </div>
             <div class="total-time">
                 <div class="total-label">Temps Total</div>
-                <div class="total-value" id="total-${group.id}">00:00:00</div>
+                <div class="total-value" id="total-${group.id}">${formatTime(calculateTotal(group))}</div>
             </div>
             <div class="group-actions">
-                <button class="group-btn btn-toggle" id="toggle-${group.id}">Démarrer</button>
+                <button class="group-btn btn-toggle ${group.isRunning ? 'stop' : ''}" id="toggle-${group.id}" ${allDone ? 'disabled' : ''}>
+                    ${group.isRunning ? 'Arrêter' : 'Démarrer'}
+                </button>
             </div>
         `;
+        
         const nameInput = card.querySelector('.group-name-input');
         nameInput.addEventListener('change', () => {
             group.name = nameInput.value.trim() || `Groupe ${group.id}`;
             nameInput.value = group.name;
+            saveState();
         });
-
+        
         const toggleBtn = card.querySelector(`#toggle-${group.id}`);
         toggleBtn.addEventListener('click', () => toggleGroup(group.id));
-
+        
+        card.querySelectorAll('.parcours-btn').forEach(btn => {
+            if (!btn.disabled) {
+                btn.addEventListener('click', () => {
+                    const parcoursNum = parseInt(btn.dataset.parcours);
+                    handleParcoursClick(group.id, parcoursNum);
+                });
+            }
+        });
+        
         groupsGrid.appendChild(card);
+        
+        if (group.isRunning) {
+            startTimer(group.id);
+        }
     });
+}
+
+function handleParcoursClick(groupId, parcoursNum) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+    
+    if (group.isRunning) {
+        // Si en course, on change le parcours actif ou on arrête si c'est le même
+        if (group.currentParcours === parcoursNum) {
+            // Arrêter sur ce parcours
+            stopGroupWithParcours(groupId, parcoursNum);
+        } else {
+            // Changer le parcours actif
+            group.currentParcours = parcoursNum;
+            updateParcoursButtons(groupId);
+            updateCurrentIndicator(groupId);
+            saveState();
+        }
+    } else {
+        // Si pas en course, démarrer sur ce parcours
+        startGroup(groupId, null, parcoursNum);
+    }
+}
+
+function calculateTotal(group) {
+    let total = 0;
+    group.parcoursData.forEach(p => { if (p.time !== null) total += p.time; });
+    if (group.isRunning) total += group.elapsedTime;
+    return total;
 }
 
 function toggleGroup(groupId) {
@@ -439,15 +740,30 @@ function toggleGroup(groupId) {
     if (!group) return;
 
     if (group.isRunning) {
-        openParcoursModal(groupId);
+        if (group.currentParcours) {
+            stopGroupWithParcours(groupId, group.currentParcours);
+        }
     } else {
-        startGroup(groupId);
+        const nextParcours = getNextAvailableParcours(group);
+        if (nextParcours) {
+            startGroup(groupId, null, nextParcours);
+        }
     }
 }
 
-function startGroup(groupId, sharedStartTime = null) {
+function startGroup(groupId, sharedStartTime = null, parcoursNum = null) {
     const group = state.groups.find(g => g.id === groupId);
     if (!group) return;
+    
+    const hasRemainingParcours = group.parcoursData.some(p => p.time === null);
+    if (!hasRemainingParcours) return;
+
+    // Définir le parcours en cours
+    if (parcoursNum && group.parcoursData[parcoursNum - 1].time === null) {
+        group.currentParcours = parcoursNum;
+    } else {
+        group.currentParcours = getNextAvailableParcours(group);
+    }
 
     group.isRunning = true;
     const now = sharedStartTime || Date.now();
@@ -455,7 +771,11 @@ function startGroup(groupId, sharedStartTime = null) {
     group.lastSplitStart = now;
 
     updateGroupUI(groupId);
+    updateParcoursButtons(groupId);
+    updateCurrentIndicator(groupId);
     startTimer(groupId);
+    updateRunningCount();
+    saveState();
 }
 
 function stopGroupWithParcours(groupId, parcoursNumber) {
@@ -466,20 +786,40 @@ function stopGroupWithParcours(groupId, parcoursNumber) {
     if (pdata.time !== null) return;
 
     group.isRunning = false;
+    const now = Date.now();
 
-    if (pdata.type === 'etoile') {
-        const now = Date.now();
-        const segment = now - group.lastSplitStart;
+    if (pdata.type === 'etoile' || pdata.type === 'papillon') {
+        const segment = now - (group.lastSplitStart || group.startTime);
         pdata.splits.push(segment);
         pdata.time = sumSplits(pdata.splits);
     } else {
-        pdata.time = Date.now() - group.startTime;
+        pdata.time = now - group.startTime;
     }
 
     group.elapsedTime = 0;
     group.lastSplitStart = null;
+    group.startTime = null;
+    group.currentParcours = null;
 
     updateGroupUI(groupId);
+    updateParcoursButtons(groupId);
+    updateCurrentIndicator(groupId);
+    updateRunningCount();
+    saveState();
+}
+
+function stopAllGroups() {
+    const runningGroups = state.groups.filter(g => g.isRunning);
+    if (runningGroups.length === 0) {
+        alert('Aucun chrono en cours.');
+        return;
+    }
+    
+    runningGroups.forEach(group => {
+        if (group.currentParcours) {
+            stopGroupWithParcours(group.id, group.currentParcours);
+        }
+    });
 }
 
 function startTimer(groupId) {
@@ -491,7 +831,7 @@ function startTimer(groupId) {
         if (!group.isRunning) return;
         const elapsed = Date.now() - group.startTime;
         group.elapsedTime = elapsed;
-        timerEl.textContent = formatTime(elapsed);
+        if (timerEl) timerEl.textContent = formatTime(elapsed);
         updateTotalTime(groupId);
         requestAnimationFrame(update);
     }
@@ -502,12 +842,8 @@ function updateTotalTime(groupId) {
     const group = state.groups.find(g => g.id === groupId);
     if (!group) return;
 
-    let total = 0;
-    group.parcoursData.forEach(p => { if (p.time !== null) total += p.time; });
-    if (group.isRunning) total += group.elapsedTime;
-
     const totalEl = document.getElementById(`total-${groupId}`);
-    if (totalEl) totalEl.textContent = formatTime(total);
+    if (totalEl) totalEl.textContent = formatTime(calculateTotal(group));
 }
 
 function updateGroupUI(groupId) {
@@ -515,61 +851,115 @@ function updateGroupUI(groupId) {
     if (!group) return;
 
     const card = document.getElementById(`group-${groupId}`);
+    if (!card) return;
+    
     const statusEl = card.querySelector('.group-status');
     const toggleBtn = card.querySelector(`#toggle-${group.id}`);
+    const timerEl = card.querySelector('.timer-display');
+    
+    const allDone = group.parcoursData.every(p => p.time !== null);
 
     card.classList.toggle('running', group.isRunning);
-    statusEl.textContent = group.isRunning ? 'En course' : 'En attente';
-    statusEl.className = 'group-status ' + (group.isRunning ? 'status-running' : 'status-waiting');
-
-    toggleBtn.textContent = group.isRunning ? 'Arrêter' : 'Démarrer';
-}
-
-function openParcoursModal(groupId) {
-    state.pendingStopGroupId = groupId;
-    modalTitle.textContent = `Parcours réalisé par ${getGroupName(groupId)}`;
-    modalGrid.innerHTML = '';
-
-    for (let i = 1; i <= state.numParcours; i++) {
-        const pdata = state.groups[groupId - 1].parcoursData[i - 1];
-        const btn = document.createElement('button');
-        btn.className = 'modal-btn';
-        btn.textContent = `P${i} (${pdata.type})`;
-        if (pdata.time !== null) {
-            btn.classList.add('disabled');
-            btn.disabled = true;
-        } else {
-            btn.addEventListener('click', () => {
-                stopGroupWithParcours(groupId, i);
-                closeModal();
-            });
-        }
-        modalGrid.appendChild(btn);
+    
+    if (allDone) {
+        statusEl.textContent = 'Terminé';
+        statusEl.className = 'group-status status-finished';
+    } else if (group.isRunning) {
+        statusEl.textContent = 'En course';
+        statusEl.className = 'group-status status-running';
+    } else {
+        statusEl.textContent = 'En attente';
+        statusEl.className = 'group-status status-waiting';
     }
-    modal.classList.add('show');
+    
+    timerEl.classList.toggle('running', group.isRunning);
+    toggleBtn.textContent = group.isRunning ? 'Arrêter' : 'Démarrer';
+    toggleBtn.classList.toggle('stop', group.isRunning);
+    
+    if (allDone) {
+        toggleBtn.disabled = true;
+    }
 }
 
-function closeModal() { modal.classList.remove('show'); state.pendingStopGroupId = null; }
-
-modalCancel.addEventListener('click', closeModal);
-
-function getGroupName(groupId) {
+function updateParcoursButtons(groupId) {
     const group = state.groups.find(g => g.id === groupId);
-    return group ? group.name : `Groupe ${groupId}`;
+    if (!group) return;
+    
+    const container = document.getElementById(`parcours-btns-${groupId}`);
+    if (!container) return;
+    
+    container.querySelectorAll('.parcours-btn').forEach((btn, idx) => {
+        const parcoursNum = idx + 1;
+        const pdata = group.parcoursData[idx];
+        
+        btn.classList.toggle('done', pdata.time !== null);
+        btn.classList.toggle('active', group.isRunning && group.currentParcours === parcoursNum);
+        
+        if (pdata.time !== null) {
+            btn.disabled = true;
+            const timeEl = btn.querySelector('.time');
+            if (timeEl) timeEl.textContent = formatTime(pdata.time);
+        }
+    });
 }
 
+function updateCurrentIndicator(groupId) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+    
+    const indicator = document.getElementById(`current-indicator-${groupId}`);
+    if (!indicator) return;
+    
+    if (group.isRunning && group.currentParcours) {
+        const typeInfo = PARCOURS_TYPES.find(t => t.value === group.parcoursData[group.currentParcours - 1].type);
+        indicator.innerHTML = `
+            <span class="pulse-dot"></span>
+            <span>Parcours ${group.currentParcours} ${typeInfo ? typeInfo.icon : ''} en cours</span>
+        `;
+        indicator.classList.remove('hidden');
+    } else {
+        indicator.classList.add('hidden');
+    }
+}
+
+// Bouton retour accueil
+document.getElementById('back-btn').addEventListener('click', () => {
+    state.groups.forEach(group => {
+        if (group.isRunning) {
+            group.isRunning = false;
+            group.elapsedTime = Date.now() - group.startTime;
+            group.startTime = null;
+        }
+    });
+    saveState();
+    showSetupScreen();
+});
+
+// Démarrer tous les chronos
 document.getElementById('start-all-btn').addEventListener('click', () => {
     const now = Date.now();
-    state.groups.forEach(group => { if (!group.isRunning) startGroup(group.id, now); });
+    state.groups.forEach(group => {
+        const hasRemainingParcours = group.parcoursData.some(p => p.time === null);
+        if (!group.isRunning && hasRemainingParcours) {
+            const nextParcours = getNextAvailableParcours(group);
+            startGroup(group.id, now, nextParcours);
+        }
+    });
 });
 
+// Arrêter tous les chronos
 document.getElementById('stop-all-btn').addEventListener('click', () => {
-    alert('Arrêt global désactivé : il faut choisir le parcours pour chaque groupe.');
+    stopAllGroups();
 });
 
+// Export CSV
 document.getElementById('export-btn').addEventListener('click', () => {
     let csv = 'Groupe';
-    for (let i = 1; i <= state.numParcours; i++) csv += `;Parcours ${i}`;
+    for (let i = 1; i <= state.numParcours; i++) {
+        const cfg = state.parcoursConfig[i - 1];
+        const typeInfo = PARCOURS_TYPES.find(t => t.value === cfg.type) || PARCOURS_TYPES[0];
+        csv += `;P${i} (${typeInfo.label})`;
+    }
     csv += ';Temps Total\n';
 
     state.groups.forEach(group => {
@@ -592,8 +982,12 @@ document.getElementById('export-btn').addEventListener('click', () => {
     URL.revokeObjectURL(url);
 });
 
+// Reset chronos
 document.getElementById('reset-btn').addEventListener('click', () => {
-    if (confirm('Voulez-vous vraiment réinitialiser tous les chronos ?')) initRace();
+    if (confirm('Voulez-vous vraiment réinitialiser tous les chronos ? Les temps seront perdus.')) {
+        initRace();
+        saveState();
+    }
 });
 
 function formatTime(ms) {
@@ -603,8 +997,21 @@ function formatTime(ms) {
     const seconds = totalSeconds % 60;
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }
+
 function pad(num) { return num.toString().padStart(2, '0'); }
 function sumSplits(splits) { return splits.reduce((acc, v) => acc + v, 0); }
+
+setInterval(() => {
+    if (state.raceStarted && state.groups.some(g => g.isRunning)) {
+        saveState();
+    }
+}, 10000);
+
+window.addEventListener('beforeunload', () => {
+    if (state.raceStarted) {
+        saveState();
+    }
+});
 
 initSetup();
 </script>
