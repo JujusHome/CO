@@ -13,17 +13,6 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <style>
-        @font-face {
-            font-family: 'SystemMono';
-            src: local('SF Mono'), local('Monaco'), local('Menlo'), local('Consolas'), local('Liberation Mono'), local('Courier New');
-            font-weight: 400;
-        }
-        @font-face {
-            font-family: 'SystemMono';
-            src: local('SF Mono Bold'), local('Monaco'), local('Menlo'), local('Consolas Bold'), local('Liberation Mono Bold'), local('Courier New');
-            font-weight: 600;
-        }
-
         :root {
             --bg-primary: #0f0f1a;
             --bg-secondary: #1a1a2e;
@@ -43,12 +32,7 @@
             --radius-lg: 20px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -61,50 +45,20 @@
 
         body::before {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background:
                 radial-gradient(ellipse at 20% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(46, 196, 182, 0.08) 0%, transparent 50%),
-                repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 30px,
-                    rgba(255, 255, 255, 0.01) 30px,
-                    rgba(255, 255, 255, 0.01) 31px
-                );
-            pointer-events: none;
-            z-index: 0;
+                repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(255, 255, 255, 0.01) 30px, rgba(255, 255, 255, 0.01) 31px);
+            pointer-events: none; z-index: 0;
         }
 
-        .app-container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 16px;
-            padding-bottom: 120px;
-        }
+        .app-container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 16px 16px 120px; }
 
-        .header {
-            text-align: center;
-            padding: 20px 0 30px;
-            position: relative;
-        }
-
+        .header { text-align: center; padding: 20px 0 30px; position: relative; }
         .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
-            border-radius: 2px;
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 3px; background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow)); border-radius: 2px;
         }
 
         .logo {
@@ -115,48 +69,19 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 40px rgba(255, 107, 53, 0.4);
         }
 
-        .subtitle {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px; letter-spacing: 2px; text-transform: uppercase; }
 
-        .setup-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-            padding: 24px 20px;
-        }
-
-        .setup-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            width: 100%;
-            max-width: 900px;
-        }
+        .setup-screen { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 24px 20px; }
+        .setup-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; width: 100%; max-width: 900px; }
 
         .setup-title {
             font-family: Impact, 'Arial Black', Haettenschweiler, sans-serif;
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-            color: var(--accent-orange);
+            font-size: 1.4rem; letter-spacing: 2px; margin-bottom: 16px; color: var(--accent-orange);
         }
 
-        .setup-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-        }
-
+        .setup-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
         .setup-btn {
             aspect-ratio: 1;
             border: 2px solid var(--border-color);
@@ -164,1358 +89,524 @@
             color: var(--text-primary);
             border-radius: var(--radius-md);
             font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
         }
-
         .setup-btn:hover, .setup-btn.selected {
-            background: var(--accent-orange);
-            border-color: var(--accent-orange);
-            transform: scale(1.04);
-            box-shadow: var(--shadow-glow);
+            background: var(--accent-orange); border-color: var(--accent-orange); transform: scale(1.04); box-shadow: var(--shadow-glow);
         }
 
-        .parcours-config {
-            display: grid;
-            gap: 12px;
-        }
-
+        .parcours-config { display: grid; gap: 12px; }
         .parcours-row {
-            display: grid;
-            grid-template-columns: 120px 1fr 140px;
-            gap: 12px;
-            align-items: center;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: var(--radius-md);
+            display: grid; grid-template-columns: 120px 1fr 140px; gap: 12px; align-items: center;
+            background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md);
         }
-
-        .parcours-label {
-            font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .type-toggle {
-            display: flex;
-            gap: 8px;
-        }
-
+        .parcours-label { font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 1rem; color: var(--text-secondary); }
+        .type-toggle { display: flex; gap: 8px; }
         .type-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            flex: 1; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-secondary); cursor: pointer; font-weight: 600; transition: all 0.2s ease;
         }
-
-        .type-btn.active {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-            color: white;
-        }
-
-        .beacons-input {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .type-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        .beacons-input { display: flex; align-items: center; gap: 8px; }
         .beacons-input input {
-            width: 70px;
-            padding: 8px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            text-align: center;
+            width: 70px; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-primary); text-align: center;
         }
 
         .start-btn {
-            width: 100%;
-            max-width: 400px;
-            padding: 18px 36px;
+            width: 100%; max-width: 400px; padding: 18px 36px;
             font-family: Impact, 'Arial Black', Haettenschweiler, sans-serif;
-            font-size: 1.6rem;
-            letter-spacing: 3px;
+            font-size: 1.6rem; letter-spacing: 3px;
             background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
-            color: white;
-            border: none;
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+            color: white; border: none; border-radius: var(--radius-lg); cursor: pointer; transition: all 0.3s ease;
         }
+        .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .start-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
-        }
-
-        .start-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .race-screen {
-            display: none;
-        }
-
-        .race-screen.active {
-            display: block;
-        }
+        .race-screen { display: none; }
+        .race-screen.active { display: block; }
 
         .controls-bar {
-            position: sticky;
-            top: 10px;
-            z-index: 10;
-            background: rgba(26, 26, 46, 0.95);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(6px);
-            padding: 10px;
-            border-radius: var(--radius-md);
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 18px;
+            position: sticky; top: 10px; z-index: 10;
+            background: rgba(26, 26, 46, 0.95); border: 1px solid var(--border-color);
+            backdrop-filter: blur(6px); padding: 10px; border-radius: var(--radius-md);
+            display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px;
         }
 
         .control-btn {
-            padding: 14px 22px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding: 14px 22px; font-weight: 600; font-size: 0.95rem; border: none; border-radius: var(--radius-md);
+            cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
         }
+        .control-btn svg { width: 20px; height: 20px; }
+        .btn-start-all { background: linear-gradient(135deg, var(--accent-green), #20a89a); color: white; }
+        .btn-stop-all { background: linear-gradient(135deg, var(--accent-red), #d63a5c); color: white; }
+        .btn-export { background: linear-gradient(135deg, var(--accent-blue), #2d6ed9); color: white; }
+        .btn-reset { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
-        .control-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .btn-start-all {
-            background: linear-gradient(135deg, var(--accent-green), #20a89a);
-            color: white;
-        }
-
-        .btn-stop-all {
-            background: linear-gradient(135deg, var(--accent-red), #d63a5c);
-            color: white;
-        }
-
-        .btn-export {
-            background: linear-gradient(135deg, var(--accent-blue), #2d6ed9);
-            color: white;
-        }
-
-        .btn-reset {
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .groups-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 16px;
-        }
+        .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
 
         .group-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 18px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+            padding: 18px; position: relative; overflow: hidden;
         }
+        .group-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--border-color); }
+        .group-card.running::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-blue)); animation: pulse-bar 1.5s ease-in-out infinite; }
+        @keyframes pulse-bar { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .group-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--border-color);
-            transition: background 0.3s ease;
-        }
-
-        .group-card.running::before {
-            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
-            animation: pulse-bar 1.5s ease-in-out infinite;
-        }
-
-        .group-card.stopped::before {
-            background: var(--accent-orange);
-        }
-
-        @keyframes pulse-bar {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .group-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
+        .group-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
         .group-name-input {
             font-family: Impact, 'Arial Black', Haettenschweiler, sans-serif;
-            font-size: 1.4rem;
-            letter-spacing: 1px;
-            color: var(--accent-yellow);
-            background: transparent;
-            border: 1px dashed transparent;
-            padding: 4px 8px;
-            border-radius: 8px;
-            width: 100%;
+            font-size: 1.4rem; letter-spacing: 1px; color: var(--accent-yellow);
+            background: transparent; border: 1px dashed transparent; padding: 4px 8px; border-radius: 8px; width: 100%;
         }
+        .group-name-input:focus { outline: none; border-color: var(--accent-yellow); background: rgba(255, 200, 87, 0.08); }
 
-        .group-name-input:focus {
-            outline: none;
-            border-color: var(--accent-yellow);
-            background: rgba(255, 200, 87, 0.08);
-        }
-
-        .group-status {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .status-waiting {
-            background: rgba(107, 107, 128, 0.3);
-            color: var(--text-muted);
-        }
-
-        .status-running {
-            background: rgba(46, 196, 182, 0.2);
-            color: var(--accent-green);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        .status-stopped {
-            background: rgba(255, 107, 53, 0.2);
-            color: var(--accent-orange);
-        }
-
-        .status-finished {
-            background: rgba(58, 134, 255, 0.2);
-            color: var(--accent-blue);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
+        .group-status { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; white-space: nowrap; }
+        .status-waiting { background: rgba(107, 107, 128, 0.3); color: var(--text-muted); }
+        .status-running { background: rgba(46, 196, 182, 0.2); color: var(--accent-green); }
 
         .timer-display {
             font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
             font-size: clamp(2rem, 8vw, 2.6rem);
-            font-weight: 600;
-            text-align: center;
-            padding: 14px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-            border: 1px solid var(--border-color);
+            font-weight: 600; text-align: center; padding: 14px;
+            background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 12px; letter-spacing: 2px; border: 1px solid var(--border-color);
         }
-
-        .timer-display.running {
-            color: var(--accent-green);
-            border-color: var(--accent-green);
-            box-shadow: 0 0 20px rgba(46, 196, 182, 0.2);
-        }
-
-        .parcours-times {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .parcours-time {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-sm);
-            padding: 8px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .parcours-time.active {
-            border-color: var(--accent-blue);
-            background: rgba(58, 134, 255, 0.1);
-        }
-
-        .parcours-time.completed {
-            border-color: var(--accent-green);
-            background: rgba(46, 196, 182, 0.1);
-        }
-
-        .pt-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .pt-value {
-            font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 0.9rem;
-            margin-top: 4px;
-            color: var(--text-secondary);
-        }
-
-        .parcours-time.completed .pt-value {
-            color: var(--accent-green);
-        }
+        .timer-display.running { color: var(--accent-green); border-color: var(--accent-green); }
 
         .total-time {
             background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 200, 87, 0.1));
-            border: 1px solid var(--accent-orange);
-            border-radius: var(--radius-md);
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 12px;
+            border: 1px solid var(--accent-orange); border-radius: var(--radius-md);
+            padding: 10px; text-align: center; margin-bottom: 12px;
         }
+        .total-label { font-size: 0.75rem; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 2px; }
+        .total-value { font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 1.3rem; font-weight: 600; color: var(--accent-yellow); margin-top: 4px; }
 
-        .total-label {
-            font-size: 0.75rem;
-            color: var(--accent-orange);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .total-value {
-            font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--accent-yellow);
-            margin-top: 4px;
-        }
-
-        .group-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
+        .group-actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .group-btn {
-            padding: 14px;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 14px; border: none; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px;
         }
+        .btn-toggle { background: linear-gradient(135deg, var(--accent-green), #20a89a); color: white; }
+        .btn-toggle.stop { background: linear-gradient(135deg, var(--accent-red), #d63a5c); }
 
-        .btn-toggle {
-            background: linear-gradient(135deg, var(--accent-green), #20a89a);
-            color: white;
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
         }
+        .modal.show { display: flex; }
+        .modal-card {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+            width: min(600px, 92vw); padding: 18px;
+        }
+        .modal-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; color: var(--accent-yellow); }
+        .modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-bottom: 12px; }
+        .modal-btn {
+            padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+            background: var(--bg-secondary); color: var(--text-primary); font-weight: 600; cursor: pointer;
+        }
+        .modal-btn.disabled { opacity: 0.3; cursor: not-allowed; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
-        .btn-toggle.stop {
-            background: linear-gradient(135deg, var(--accent-red), #d63a5c);
-        }
+        .hidden { display: none !important; }
 
-        .btn-split {
-            background: linear-gradient(135deg, var(--accent-blue), #2d6ed9);
-            color: white;
-        }
-
-        .btn-split:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .group-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .parcours-selection {
-            margin-bottom: 12px;
-            padding: 10px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-        }
-
-        .select-label {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .parcours-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .parcours-select-btn {
-            position: relative;
-            min-width: 52px;
-            height: 42px;
-            border: 2px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border-radius: var(--radius-sm);
-            font-family: 'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .parcours-select-btn:hover:not(:disabled):not(.completed) {
-            border-color: var(--accent-blue);
-            background: rgba(58, 134, 255, 0.1);
-        }
-
-        .parcours-select-btn.selected {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-            color: white;
-            box-shadow: 0 0 15px rgba(58, 134, 255, 0.4);
-        }
-
-        .parcours-select-btn.completed {
-            background: rgba(46, 196, 182, 0.2);
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-            cursor: default;
-        }
-
-        .parcours-select-btn.disabled:not(.completed) {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .parcours-select-btn .check {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 18px;
-            height: 18px;
-            background: var(--accent-green);
-            color: white;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .no-parcours {
-            color: var(--accent-green);
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .etoile-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .etoile-info span {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--bg-card);
-            color: var(--text-primary);
-            padding: 16px 24px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--accent-green);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .back-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            z-index: 100;
-        }
-
-        .back-btn:hover {
-            background: var(--accent-orange);
-            border-color: var(--accent-orange);
-            color: white;
-        }
-
-        .back-btn svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .setup-grid {
-                grid-template-columns: repeat(5, 1fr);
-            }
-            .parcours-row {
-                grid-template-columns: 90px 1fr 120px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .app-container {
-                padding: 12px;
-                padding-bottom: 110px;
-            }
-            .setup-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .groups-grid {
-                grid-template-columns: 1fr;
-            }
-            .parcours-times {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-            }
-            .control-btn {
-                padding: 12px 16px;
-                font-size: 0.85rem;
-            }
-            .parcours-row {
-                grid-template-columns: 1fr;
-            }
-            .beacons-input {
-                justify-content: flex-start;
-            }
-            .group-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            padding: 16px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            z-index: 1000;
-        }
-
-        .install-banner.show {
-            display: flex;
-        }
-
-        .install-btn {
-            padding: 12px 24px;
-            background: var(--accent-orange);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .install-dismiss {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 8px;
-        }
+        @media (max-width: 900px) { .setup-grid { grid-template-columns: repeat(5, 1fr); } .parcours-row { grid-template-columns: 90px 1fr 120px; } }
+        @media (max-width: 600px) { .setup-grid { grid-template-columns: repeat(4, 1fr); } .groups-grid { grid-template-columns: 1fr; } .parcours-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="header">
-            <h1 class="logo">CHRONO CO</h1>
-            <p class="subtitle">Course d'Orientation EPS</p>
-        </header>
+<div class="app-container">
+    <header class="header">
+        <h1 class="logo">CHRONO CO</h1>
+        <p class="subtitle">Course d'Orientation EPS</p>
+    </header>
 
-        <div id="setup-screen" class="setup-screen">
-            <div class="setup-card">
-                <h2 class="setup-title">Nombre de groupes</h2>
-                <div class="setup-grid" id="groups-selector"></div>
-            </div>
-
-            <div class="setup-card">
-                <h2 class="setup-title">Nombre de parcours</h2>
-                <div class="setup-grid" id="parcours-selector"></div>
-            </div>
-
-            <div class="setup-card">
-                <h2 class="setup-title">Type de chaque parcours</h2>
-                <div class="parcours-config" id="parcours-config"></div>
-            </div>
-
-            <button class="start-btn" id="start-btn" disabled>Démarrer la Course</button>
+    <div id="setup-screen" class="setup-screen">
+        <div class="setup-card">
+            <h2 class="setup-title">Nombre de groupes</h2>
+            <div class="setup-grid" id="groups-selector"></div>
         </div>
 
-        <div id="race-screen" class="race-screen">
-            <div class="controls-bar">
-                <button class="control-btn btn-start-all" id="start-all-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    Démarrer tous (simultané)
-                </button>
-                <button class="control-btn btn-stop-all" id="stop-all-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="6" y="4" width="4" height="16"></rect>
-                        <rect x="14" y="4" width="4" height="16"></rect>
-                    </svg>
-                    Arrêter tous
-                </button>
-                <button class="control-btn btn-export" id="export-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Exporter CSV
-                </button>
-                <button class="control-btn btn-reset" id="reset-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="1 4 1 10 7 10"></polyline>
-                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                    </svg>
-                    Reset
-                </button>
-            </div>
+        <div class="setup-card">
+            <h2 class="setup-title">Nombre de parcours</h2>
+            <div class="setup-grid" id="parcours-selector"></div>
+        </div>
 
-            <div class="groups-grid" id="groups-grid"></div>
+        <div class="setup-card">
+            <h2 class="setup-title">Type de chaque parcours (avant la course)</h2>
+            <div class="parcours-config" id="parcours-config"></div>
+        </div>
+
+        <button class="start-btn" id="start-btn" disabled>Démarrer la Course</button>
+    </div>
+
+    <div id="race-screen" class="race-screen">
+        <div class="controls-bar">
+            <button class="control-btn btn-start-all" id="start-all-btn">Démarrer tous</button>
+            <button class="control-btn btn-stop-all" id="stop-all-btn">Arrêter tous</button>
+            <button class="control-btn btn-export" id="export-btn">Exporter CSV</button>
+            <button class="control-btn btn-reset" id="reset-btn">Reset</button>
+        </div>
+        <div class="groups-grid" id="groups-grid"></div>
+    </div>
+</div>
+
+<div class="modal" id="parcours-modal">
+    <div class="modal-card">
+        <div class="modal-title" id="modal-title">Choisir le parcours terminé</div>
+        <div class="modal-grid" id="modal-grid"></div>
+        <div class="modal-actions">
+            <button class="modal-btn" id="modal-cancel">Annuler</button>
         </div>
     </div>
+</div>
 
-    <button class="back-btn hidden" id="back-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-    </button>
+<script>
+const state = {
+    numGroups: 0,
+    numParcours: 0,
+    parcoursConfig: [],
+    groups: [],
+    pendingStopGroupId: null
+};
 
-    <div class="toast" id="toast"></div>
+const setupScreen = document.getElementById('setup-screen');
+const raceScreen = document.getElementById('race-screen');
+const groupsSelector = document.getElementById('groups-selector');
+const parcoursSelector = document.getElementById('parcours-selector');
+const parcoursConfigEl = document.getElementById('parcours-config');
+const startBtn = document.getElementById('start-btn');
+const groupsGrid = document.getElementById('groups-grid');
 
-    <div class="install-banner" id="install-banner">
-        <span>Installer l'application</span>
-        <button class="install-btn" id="install-btn">Installer</button>
-        <button class="install-dismiss" id="install-dismiss">✕</button>
-    </div>
+const modal = document.getElementById('parcours-modal');
+const modalGrid = document.getElementById('modal-grid');
+const modalTitle = document.getElementById('modal-title');
+const modalCancel = document.getElementById('modal-cancel');
 
-    <script>
-        const state = {
-            numGroups: 0,
-            numParcours: 0,
-            parcoursConfig: [],
-            groups: [],
-            raceStarted: false
-        };
+function initSetup() {
+    for (let i = 1; i <= 25; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'setup-btn';
+        btn.textContent = i;
+        btn.addEventListener('click', () => selectGroups(i, btn));
+        groupsSelector.appendChild(btn);
+    }
 
-        const setupScreen = document.getElementById('setup-screen');
-        const raceScreen = document.getElementById('race-screen');
-        const groupsSelector = document.getElementById('groups-selector');
-        const parcoursSelector = document.getElementById('parcours-selector');
-        const parcoursConfigEl = document.getElementById('parcours-config');
-        const startBtn = document.getElementById('start-btn');
-        const backBtn = document.getElementById('back-btn');
-        const groupsGrid = document.getElementById('groups-grid');
-        const startAllBtn = document.getElementById('start-all-btn');
-        const stopAllBtn = document.getElementById('stop-all-btn');
-        const exportBtn = document.getElementById('export-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const toast = document.getElementById('toast');
+    for (let i = 1; i <= 6; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'setup-btn';
+        btn.textContent = i;
+        btn.addEventListener('click', () => selectNumParcours(i, btn));
+        parcoursSelector.appendChild(btn);
+    }
+    renderParcoursConfig();
+}
 
-        function initSetup() {
-            for (let i = 1; i <= 25; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'setup-btn';
-                btn.textContent = i;
-                btn.addEventListener('click', () => selectGroups(i, btn));
-                groupsSelector.appendChild(btn);
-            }
+function selectGroups(num, btn) {
+    groupsSelector.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.numGroups = num;
+    updateStartButton();
+}
 
-            for (let i = 1; i <= 6; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'setup-btn';
-                btn.textContent = i;
-                btn.addEventListener('click', () => selectNumParcours(i, btn));
-                parcoursSelector.appendChild(btn);
-            }
+function selectNumParcours(num, btn) {
+    parcoursSelector.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.numParcours = num;
+    state.parcoursConfig = [];
+    for (let i = 0; i < num; i++) {
+        state.parcoursConfig.push({ type: 'circuit', beacons: 6 });
+    }
+    renderParcoursConfig();
+    updateStartButton();
+}
 
-            renderParcoursConfig();
-        }
+function renderParcoursConfig() {
+    parcoursConfigEl.innerHTML = '';
+    if (state.numParcours === 0) {
+        parcoursConfigEl.innerHTML = '<span class="no-parcours">Choisissez d’abord le nombre de parcours</span>';
+        return;
+    }
+    state.parcoursConfig.forEach((cfg, index) => {
+        const row = document.createElement('div');
+        row.className = 'parcours-row';
+        row.innerHTML = `
+            <div class="parcours-label">Parcours ${index + 1}</div>
+            <div class="type-toggle">
+                <button class="type-btn ${cfg.type === 'circuit' ? 'active' : ''}" data-type="circuit">Circuit</button>
+                <button class="type-btn ${cfg.type === 'etoile' ? 'active' : ''}" data-type="etoile">Étoile</button>
+            </div>
+            <div class="beacons-input">
+                <span>Balises</span>
+                <input type="number" min="1" max="50" value="${cfg.beacons}" ${cfg.type === 'circuit' ? 'disabled' : ''}>
+            </div>
+        `;
+        const [btnCircuit, btnEtoile] = row.querySelectorAll('.type-btn');
+        const beaconsInput = row.querySelector('input');
 
-        function selectGroups(num, btn) {
-            groupsSelector.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            state.numGroups = num;
+        btnCircuit.addEventListener('click', () => {
+            cfg.type = 'circuit';
+            btnCircuit.classList.add('active');
+            btnEtoile.classList.remove('active');
+            beaconsInput.disabled = true;
             updateStartButton();
-        }
+        });
 
-        function selectNumParcours(num, btn) {
-            parcoursSelector.querySelectorAll('.setup-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            state.numParcours = num;
-            state.parcoursConfig = [];
-            for (let i = 0; i < num; i++) {
-                state.parcoursConfig.push({ type: 'circuit', beacons: 6 });
-            }
-            renderParcoursConfig();
+        btnEtoile.addEventListener('click', () => {
+            cfg.type = 'etoile';
+            btnEtoile.classList.add('active');
+            btnCircuit.classList.remove('active');
+            beaconsInput.disabled = false;
             updateStartButton();
-        }
-
-        function renderParcoursConfig() {
-            parcoursConfigEl.innerHTML = '';
-            if (state.numParcours === 0) {
-                parcoursConfigEl.innerHTML = '<span class="no-parcours">Choisissez d’abord le nombre de parcours</span>';
-                return;
-            }
-
-            state.parcoursConfig.forEach((cfg, index) => {
-                const row = document.createElement('div');
-                row.className = 'parcours-row';
-                row.innerHTML = `
-                    <div class="parcours-label">Parcours ${index + 1}</div>
-                    <div class="type-toggle">
-                        <button class="type-btn ${cfg.type === 'circuit' ? 'active' : ''}" data-type="circuit">Circuit</button>
-                        <button class="type-btn ${cfg.type === 'etoile' ? 'active' : ''}" data-type="etoile">Étoile</button>
-                    </div>
-                    <div class="beacons-input">
-                        <span>Balises</span>
-                        <input type="number" min="1" max="50" value="${cfg.beacons}" ${cfg.type === 'circuit' ? 'disabled' : ''}>
-                    </div>
-                `;
-                const [btnCircuit, btnEtoile] = row.querySelectorAll('.type-btn');
-                const beaconsInput = row.querySelector('input');
-
-                btnCircuit.addEventListener('click', () => {
-                    cfg.type = 'circuit';
-                    btnCircuit.classList.add('active');
-                    btnEtoile.classList.remove('active');
-                    beaconsInput.disabled = true;
-                    updateStartButton();
-                });
-
-                btnEtoile.addEventListener('click', () => {
-                    cfg.type = 'etoile';
-                    btnEtoile.classList.add('active');
-                    btnCircuit.classList.remove('active');
-                    beaconsInput.disabled = false;
-                    updateStartButton();
-                });
-
-                beaconsInput.addEventListener('input', () => {
-                    const val = parseInt(beaconsInput.value, 10);
-                    cfg.beacons = isNaN(val) ? 1 : Math.max(1, val);
-                    updateStartButton();
-                });
-
-                parcoursConfigEl.appendChild(row);
-            });
-        }
-
-        function updateStartButton() {
-            const validParcours = state.parcoursConfig.every(cfg => cfg.type === 'circuit' || (cfg.type === 'etoile' && cfg.beacons >= 1));
-            startBtn.disabled = !(state.numGroups > 0 && state.numParcours > 0 && validParcours);
-        }
-
-        startBtn.addEventListener('click', () => {
-            initRace();
-            setupScreen.classList.add('hidden');
-            raceScreen.classList.add('active');
-            backBtn.classList.remove('hidden');
         });
 
-        backBtn.addEventListener('click', () => {
-            if (confirm('Voulez-vous vraiment revenir ? Les données seront perdues.')) {
-                raceScreen.classList.remove('active');
-                setupScreen.classList.remove('hidden');
-                backBtn.classList.add('hidden');
-                state.raceStarted = false;
-                stopAllTimers();
-            }
+        beaconsInput.addEventListener('input', () => {
+            const val = parseInt(beaconsInput.value, 10);
+            cfg.beacons = isNaN(val) ? 1 : Math.max(1, val);
+            updateStartButton();
         });
 
-        function initRace() {
-            state.groups = [];
-            for (let i = 1; i <= state.numGroups; i++) {
-                const parcoursData = state.parcoursConfig.map(cfg => ({
-                    type: cfg.type,
-                    beacons: cfg.beacons,
-                    splits: [],
-                    time: null
-                }));
-
-                state.groups.push({
-                    id: i,
-                    name: `Groupe ${i}`,
-                    currentParcours: null,
-                    isRunning: false,
-                    startTime: null,
-                    elapsedTime: 0,
-                    lastSplitStart: null,
-                    parcoursData,
-                    finished: false
-                });
-            }
-            renderGroups();
-        }
-
-        function renderGroups() {
-            groupsGrid.innerHTML = '';
-            state.groups.forEach(group => {
-                const card = createGroupCard(group);
-                groupsGrid.appendChild(card);
-            });
-        }
-
-        function createGroupCard(group) {
-            const card = document.createElement('div');
-            card.className = 'group-card';
-            card.id = `group-${group.id}`;
-
-            const availableParcours = getAvailableParcours(group);
-            const isFinished = availableParcours.length === 0;
-            group.finished = isFinished;
-
-            card.innerHTML = `
-                <div class="group-header">
-                    <input class="group-name-input" value="${group.name}" />
-                    <span class="group-status status-waiting">En attente</span>
-                </div>
-
-                <div class="parcours-selection" id="parcours-select-${group.id}">
-                    <label class="select-label">Parcours à chronométrer :</label>
-                    <div class="parcours-buttons">
-                        ${renderParcoursButtons(group, availableParcours)}
-                    </div>
-                </div>
-
-                <div class="timer-display" id="timer-${group.id}">00:00:00</div>
-
-                <div class="etoile-info hidden" id="etoile-info-${group.id}">
-                    <span id="etoile-progress-${group.id}">Étoile: 0/0</span>
-                    <span id="etoile-hint-${group.id}">Appuyez sur “Balise trouvée”</span>
-                </div>
-
-                <div class="parcours-times" id="parcours-times-${group.id}">
-                    ${renderParcoursTimes(group)}
-                </div>
-                <div class="total-time">
-                    <div class="total-label">Temps Total</div>
-                    <div class="total-value" id="total-${group.id}">${formatTime(calculateTotalTime(group))}</div>
-                </div>
-                <div class="group-actions">
-                    <button class="group-btn btn-toggle" id="toggle-${group.id}" ${group.currentParcours === null && !isFinished ? 'disabled' : ''}>
-                        ${isFinished ? 'Terminé' : 'Démarrer'}
-                    </button>
-                    <button class="group-btn btn-split" id="split-${group.id}" disabled>Balise trouvée</button>
-                </div>
-            `;
-
-            const nameInput = card.querySelector('.group-name-input');
-            nameInput.addEventListener('change', () => {
-                group.name = nameInput.value.trim() || `Groupe ${group.id}`;
-                nameInput.value = group.name;
-            });
-
-            const toggleBtn = card.querySelector(`#toggle-${group.id}`);
-            toggleBtn.addEventListener('click', () => toggleGroup(group.id));
-
-            const splitBtn = card.querySelector(`#split-${group.id}`);
-            splitBtn.addEventListener('click', () => registerBeacon(group.id));
-
-            card.querySelectorAll('.parcours-select-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const parcours = parseInt(btn.dataset.parcours);
-                    selectParcours(group.id, parcours);
-                });
-            });
-
-            return card;
-        }
-
-        function getAvailableParcours(group) {
-            const available = [];
-            for (let i = 0; i < state.numParcours; i++) {
-                if (group.parcoursData[i].time === null) {
-                    available.push(i + 1);
-                }
-            }
-            return available;
-        }
-
-        function renderParcoursButtons(group, availableParcours) {
-            if (availableParcours.length === 0) {
-                return '<span class="no-parcours">Tous les parcours terminés</span>';
-            }
-
-            let html = '';
-            for (let i = 1; i <= state.numParcours; i++) {
-                const isAvailable = availableParcours.includes(i);
-                const isSelected = group.currentParcours === i;
-                const isCompleted = group.parcoursData[i - 1].time !== null;
-
-                html += `
-                    <button class="parcours-select-btn ${isSelected ? 'selected' : ''} ${isCompleted ? 'completed' : ''} ${!isAvailable ? 'disabled' : ''}" 
-                            data-parcours="${i}"
-                            ${!isAvailable || group.isRunning ? 'disabled' : ''}>
-                        P${i}
-                        ${isCompleted ? '<span class="check">✓</span>' : ''}
-                    </button>
-                `;
-            }
-            return html;
-        }
-
-        function selectParcours(groupId, parcours) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group || group.isRunning || group.parcoursData[parcours - 1].time !== null) return;
-
-            group.currentParcours = parcours;
-            group.elapsedTime = 0;
-            group.startTime = null;
-            group.lastSplitStart = null;
-
-            updateGroupUI(groupId);
-        }
-
-        function calculateTotalTime(group) {
-            let total = 0;
-            group.parcoursData.forEach(p => {
-                if (p.time !== null) total += p.time;
-            });
-            return total;
-        }
-
-        function renderParcoursTimes(group) {
-            let html = '';
-            for (let i = 0; i < state.numParcours; i++) {
-                const isActive = group.currentParcours === i + 1;
-                const isCompleted = group.parcoursData[i].time !== null;
-                html += `
-                    <div class="parcours-time ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}">
-                        <div class="pt-label">P${i + 1}</div>
-                        <div class="pt-value">${isCompleted ? formatTime(group.parcoursData[i].time) : '--:--'}</div>
-                    </div>
-                `;
-            }
-            return html;
-        }
-
-        function toggleGroup(groupId) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group || group.finished) return;
-
-            if (group.isRunning) {
-                stopGroup(groupId);
-            } else {
-                startGroup(groupId);
-            }
-        }
-
-        function startGroup(groupId, sharedStartTime = null) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group || group.finished || group.currentParcours === null) return;
-
-            group.isRunning = true;
-            const now = sharedStartTime || Date.now();
-            group.startTime = now - group.elapsedTime;
-            group.lastSplitStart = now;
-            state.raceStarted = true;
-
-            updateGroupUI(groupId);
-            startTimer(groupId);
-        }
-
-        function stopGroup(groupId, isAuto = false) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group || !group.isRunning) return;
-
-            const parcoursIndex = group.currentParcours - 1;
-            const pdata = group.parcoursData[parcoursIndex];
-
-            group.isRunning = false;
-
-            if (pdata.type === 'etoile') {
-                const now = Date.now();
-                const segment = now - group.lastSplitStart;
-                pdata.splits.push(segment);
-                pdata.time = sumSplits(pdata.splits);
-            } else {
-                group.elapsedTime = Date.now() - group.startTime;
-                pdata.time = group.elapsedTime;
-            }
-
-            group.currentParcours = null;
-            group.elapsedTime = 0;
-            group.lastSplitStart = null;
-
-            if (getAvailableParcours(group).length === 0) {
-                group.finished = true;
-            }
-
-            updateGroupUI(groupId);
-
-            if (isAuto) {
-                showToast('Parcours étoile terminé');
-            }
-        }
-
-        function registerBeacon(groupId) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group || !group.isRunning || group.currentParcours === null) return;
-
-            const pdata = group.parcoursData[group.currentParcours - 1];
-            if (pdata.type !== 'etoile') return;
-
-            const now = Date.now();
-            const segment = now - group.lastSplitStart;
-            pdata.splits.push(segment);
-            group.lastSplitStart = now;
-
-            if (pdata.splits.length >= pdata.beacons) {
-                stopGroup(groupId, true);
-            } else {
-                updateGroupUI(groupId);
-            }
-        }
-
-        function sumSplits(splits) {
-            return splits.reduce((acc, v) => acc + v, 0);
-        }
-
-        function startTimer(groupId) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group) return;
-
-            const timerEl = document.getElementById(`timer-${groupId}`);
-
-            function update() {
-                if (!group.isRunning) return;
-
-                const elapsed = Date.now() - group.startTime;
-                group.elapsedTime = elapsed;
-
-                const parcoursIndex = group.currentParcours - 1;
-                const pdata = group.parcoursData[parcoursIndex];
-
-                if (pdata.type === 'etoile') {
-                    const runningTotal = sumSplits(pdata.splits) + (Date.now() - group.lastSplitStart);
-                    timerEl.textContent = formatTime(runningTotal);
-                } else {
-                    timerEl.textContent = formatTime(elapsed);
-                }
-
-                updateTotalTime(groupId);
-                requestAnimationFrame(update);
-            }
-
-            requestAnimationFrame(update);
-        }
-
-        function updateTotalTime(groupId) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group) return;
-
-            let total = calculateTotalTime(group);
-
-            if (group.isRunning) {
-                const pdata = group.parcoursData[group.currentParcours - 1];
-                if (pdata.type === 'etoile') {
-                    total += sumSplits(pdata.splits) + (Date.now() - group.lastSplitStart);
-                } else {
-                    total += group.elapsedTime;
-                }
-            }
-
-            const totalEl = document.getElementById(`total-${groupId}`);
-            if (totalEl) {
-                totalEl.textContent = formatTime(total);
-            }
-        }
-
-        function updateGroupUI(groupId) {
-            const group = state.groups.find(g => g.id === groupId);
-            if (!group) return;
-
-            const card = document.getElementById(`group-${groupId}`);
-            const statusEl = card.querySelector('.group-status');
-            const timerEl = document.getElementById(`timer-${groupId}`);
-            const toggleBtn = document.getElementById(`toggle-${groupId}`);
-            const splitBtn = document.getElementById(`split-${groupId}`);
-            const parcoursTimesEl = document.getElementById(`parcours-times-${groupId}`);
-            const parcoursSelectEl = document.getElementById(`parcours-select-${groupId}`);
-            const etoileInfoEl = document.getElementById(`etoile-info-${groupId}`);
-            const etoileProgressEl = document.getElementById(`etoile-progress-${groupId}`);
-
-            const availableParcours = getAvailableParcours(group);
-            group.finished = availableParcours.length === 0;
-
-            card.classList.remove('running', 'stopped');
-            if (group.isRunning) {
-                card.classList.add('running');
-            } else if (group.currentParcours !== null) {
-                card.classList.add('stopped');
-            }
-
-            statusEl.className = 'group-status';
-            if (group.finished) {
-                statusEl.classList.add('status-finished');
-                statusEl.textContent = 'Terminé';
-            } else if (group.isRunning) {
-                statusEl.classList.add('status-running');
-                statusEl.textContent = `P${group.currentParcours} en cours`;
-            } else if (group.currentParcours !== null) {
-                statusEl.classList.add('status-stopped');
-                statusEl.textContent = `P${group.currentParcours} sélectionné`;
-            } else {
-                statusEl.classList.add('status-waiting');
-                statusEl.textContent = 'Sélectionner un parcours';
-            }
-
-            timerEl.classList.toggle('running', group.isRunning);
-            if (!group.isRunning) {
-                timerEl.textContent = '00:00:00';
-            }
-
-            if (group.finished) {
-                toggleBtn.disabled = true;
-                toggleBtn.textContent = 'Terminé';
-                toggleBtn.classList.remove('stop');
-            } else if (group.isRunning) {
-                toggleBtn.disabled = false;
-                toggleBtn.classList.add('stop');
-                toggleBtn.textContent = 'Arrêter';
-            } else if (group.currentParcours === null) {
-                toggleBtn.disabled = true;
-                toggleBtn.classList.remove('stop');
-                toggleBtn.textContent = 'Démarrer';
-            } else {
-                toggleBtn.disabled = false;
-                toggleBtn.classList.remove('stop');
-                toggleBtn.textContent = 'Démarrer';
-            }
-
-            const buttonsContainer = parcoursSelectEl.querySelector('.parcours-buttons');
-            buttonsContainer.innerHTML = renderParcoursButtons(group, availableParcours);
-            buttonsContainer.querySelectorAll('.parcours-select-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const parcours = parseInt(btn.dataset.parcours);
-                    selectParcours(group.id, parcours);
-                });
-            });
-
-            parcoursTimesEl.innerHTML = renderParcoursTimes(group);
-
-            const activeParcours = group.currentParcours;
-            if (activeParcours !== null) {
-                const pdata = group.parcoursData[activeParcours - 1];
-                if (pdata.type === 'etoile') {
-                    etoileInfoEl.classList.remove('hidden');
-                    etoileProgressEl.textContent = `Étoile: ${pdata.splits.length}/${pdata.beacons}`;
-                    splitBtn.disabled = !group.isRunning;
-                } else {
-                    etoileInfoEl.classList.add('hidden');
-                    splitBtn.disabled = true;
-                }
-            } else {
-                etoileInfoEl.classList.add('hidden');
-                splitBtn.disabled = true;
-            }
-
-            updateTotalTime(groupId);
-        }
-
-        startAllBtn.addEventListener('click', () => {
-            let started = 0;
-            const now = Date.now();
-            state.groups.forEach(group => {
-                if (!group.isRunning && !group.finished && group.currentParcours !== null) {
-                    startGroup(group.id, now);
-                    started++;
-                }
-            });
-            if (started > 0) {
-                showToast(`${started} chronomètre(s) démarré(s)`);
-            } else {
-                showToast('Sélectionnez un parcours pour chaque groupe');
-            }
+        parcoursConfigEl.appendChild(row);
+    });
+}
+
+function updateStartButton() {
+    const validParcours = state.parcoursConfig.every(cfg => cfg.type === 'circuit' || (cfg.type === 'etoile' && cfg.beacons >= 1));
+    startBtn.disabled = !(state.numGroups > 0 && state.numParcours > 0 && validParcours);
+}
+
+startBtn.addEventListener('click', () => {
+    initRace();
+    setupScreen.classList.add('hidden');
+    raceScreen.classList.add('active');
+});
+
+function initRace() {
+    state.groups = [];
+    for (let i = 1; i <= state.numGroups; i++) {
+        const parcoursData = state.parcoursConfig.map(cfg => ({
+            type: cfg.type,
+            beacons: cfg.beacons,
+            splits: [],
+            time: null
+        }));
+        state.groups.push({
+            id: i,
+            name: `Groupe ${i}`,
+            isRunning: false,
+            startTime: null,
+            elapsedTime: 0,
+            lastSplitStart: null,
+            parcoursData
+        });
+    }
+    renderGroups();
+}
+
+function renderGroups() {
+    groupsGrid.innerHTML = '';
+    state.groups.forEach(group => {
+        const card = document.createElement('div');
+        card.className = 'group-card';
+        card.id = `group-${group.id}`;
+        card.innerHTML = `
+            <div class="group-header">
+                <input class="group-name-input" value="${group.name}" />
+                <span class="group-status status-waiting">En attente</span>
+            </div>
+            <div class="timer-display" id="timer-${group.id}">00:00:00</div>
+            <div class="total-time">
+                <div class="total-label">Temps Total</div>
+                <div class="total-value" id="total-${group.id}">00:00:00</div>
+            </div>
+            <div class="group-actions">
+                <button class="group-btn btn-toggle" id="toggle-${group.id}">Démarrer</button>
+            </div>
+        `;
+        const nameInput = card.querySelector('.group-name-input');
+        nameInput.addEventListener('change', () => {
+            group.name = nameInput.value.trim() || `Groupe ${group.id}`;
+            nameInput.value = group.name;
         });
 
-        stopAllBtn.addEventListener('click', () => {
-            state.groups.forEach(group => {
-                if (group.isRunning) {
-                    stopGroup(group.id);
-                }
+        const toggleBtn = card.querySelector(`#toggle-${group.id}`);
+        toggleBtn.addEventListener('click', () => toggleGroup(group.id));
+
+        groupsGrid.appendChild(card);
+    });
+}
+
+function toggleGroup(groupId) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    if (group.isRunning) {
+        openParcoursModal(groupId);
+    } else {
+        startGroup(groupId);
+    }
+}
+
+function startGroup(groupId, sharedStartTime = null) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    group.isRunning = true;
+    const now = sharedStartTime || Date.now();
+    group.startTime = now - group.elapsedTime;
+    group.lastSplitStart = now;
+
+    updateGroupUI(groupId);
+    startTimer(groupId);
+}
+
+function stopGroupWithParcours(groupId, parcoursNumber) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    const pdata = group.parcoursData[parcoursNumber - 1];
+    if (pdata.time !== null) return;
+
+    group.isRunning = false;
+
+    if (pdata.type === 'etoile') {
+        const now = Date.now();
+        const segment = now - group.lastSplitStart;
+        pdata.splits.push(segment);
+        pdata.time = sumSplits(pdata.splits);
+    } else {
+        pdata.time = Date.now() - group.startTime;
+    }
+
+    group.elapsedTime = 0;
+    group.lastSplitStart = null;
+
+    updateGroupUI(groupId);
+}
+
+function startTimer(groupId) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+    const timerEl = document.getElementById(`timer-${groupId}`);
+
+    function update() {
+        if (!group.isRunning) return;
+        const elapsed = Date.now() - group.startTime;
+        group.elapsedTime = elapsed;
+        timerEl.textContent = formatTime(elapsed);
+        updateTotalTime(groupId);
+        requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
+function updateTotalTime(groupId) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    let total = 0;
+    group.parcoursData.forEach(p => { if (p.time !== null) total += p.time; });
+    if (group.isRunning) total += group.elapsedTime;
+
+    const totalEl = document.getElementById(`total-${groupId}`);
+    if (totalEl) totalEl.textContent = formatTime(total);
+}
+
+function updateGroupUI(groupId) {
+    const group = state.groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    const card = document.getElementById(`group-${groupId}`);
+    const statusEl = card.querySelector('.group-status');
+    const toggleBtn = card.querySelector(`#toggle-${group.id}`);
+
+    card.classList.toggle('running', group.isRunning);
+    statusEl.textContent = group.isRunning ? 'En course' : 'En attente';
+    statusEl.className = 'group-status ' + (group.isRunning ? 'status-running' : 'status-waiting');
+
+    toggleBtn.textContent = group.isRunning ? 'Arrêter' : 'Démarrer';
+}
+
+function openParcoursModal(groupId) {
+    state.pendingStopGroupId = groupId;
+    modalTitle.textContent = `Parcours réalisé par ${getGroupName(groupId)}`;
+    modalGrid.innerHTML = '';
+
+    for (let i = 1; i <= state.numParcours; i++) {
+        const pdata = state.groups[groupId - 1].parcoursData[i - 1];
+        const btn = document.createElement('button');
+        btn.className = 'modal-btn';
+        btn.textContent = `P${i} (${pdata.type})`;
+        if (pdata.time !== null) {
+            btn.classList.add('disabled');
+            btn.disabled = true;
+        } else {
+            btn.addEventListener('click', () => {
+                stopGroupWithParcours(groupId, i);
+                closeModal();
             });
-            showToast('Tous les chronomètres arrêtés');
-        });
-
-        function stopAllTimers() {
-            state.groups.forEach(group => {
-                group.isRunning = false;
-            });
         }
+        modalGrid.appendChild(btn);
+    }
+    modal.classList.add('show');
+}
 
-        exportBtn.addEventListener('click', () => {
-            exportToCSV();
-        });
+function closeModal() { modal.classList.remove('show'); state.pendingStopGroupId = null; }
 
-        function exportToCSV() {
-            let csv = 'Groupe';
-            for (let i = 1; i <= state.numParcours; i++) {
-                csv += `;Parcours ${i}`;
-            }
-            csv += ';Temps Total\n';
+modalCancel.addEventListener('click', closeModal);
 
-            state.groups.forEach(group => {
-                csv += `${group.name}`;
-                let total = 0;
+function getGroupName(groupId) {
+    const group = state.groups.find(g => g.id === groupId);
+    return group ? group.name : `Groupe ${groupId}`;
+}
 
-                for (let i = 0; i < state.numParcours; i++) {
-                    const time = group.parcoursData[i].time;
-                    csv += `;${time !== null ? formatTime(time) : '-'}`;
-                    if (time !== null) total += time;
-                }
+document.getElementById('start-all-btn').addEventListener('click', () => {
+    const now = Date.now();
+    state.groups.forEach(group => { if (!group.isRunning) startGroup(group.id, now); });
+});
 
-                csv += `;${formatTime(total)}\n`;
-            });
+document.getElementById('stop-all-btn').addEventListener('click', () => {
+    alert('Arrêt global désactivé : il faut choisir le parcours pour chaque groupe.');
+});
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `course-orientation-${new Date().toISOString().slice(0, 10)}.csv`;
-            link.click();
-            URL.revokeObjectURL(url);
+document.getElementById('export-btn').addEventListener('click', () => {
+    let csv = 'Groupe';
+    for (let i = 1; i <= state.numParcours; i++) csv += `;Parcours ${i}`;
+    csv += ';Temps Total\n';
 
-            showToast('Export CSV téléchargé');
+    state.groups.forEach(group => {
+        csv += `${group.name}`;
+        let total = 0;
+        for (let i = 0; i < state.numParcours; i++) {
+            const time = group.parcoursData[i].time;
+            csv += `;${time !== null ? formatTime(time) : '-'}`;
+            if (time !== null) total += time;
         }
+        csv += `;${formatTime(total)}\n`;
+    });
 
-        resetBtn.addEventListener('click', () => {
-            if (confirm('Voulez-vous vraiment réinitialiser tous les chronos ?')) {
-                initRace();
-                showToast('Chronos réinitialisés');
-            }
-        });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `course-orientation-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+});
 
-        function formatTime(ms) {
-            if (ms === null || ms === undefined) return '00:00:00';
+document.getElementById('reset-btn').addEventListener('click', () => {
+    if (confirm('Voulez-vous vraiment réinitialiser tous les chronos ?')) initRace();
+});
 
-            const totalSeconds = Math.floor(ms / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
+function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+function pad(num) { return num.toString().padStart(2, '0'); }
+function sumSplits(splits) { return splits.reduce((acc, v) => acc + v, 0); }
 
-            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        }
-
-        function pad(num) {
-            return num.toString().padStart(2, '0');
-        }
-
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('install-banner').classList.add('show');
-        });
-
-        document.getElementById('install-btn').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                document.getElementById('install-banner').classList.remove('show');
-            }
-        });
-
-        document.getElementById('install-dismiss').addEventListener('click', () => {
-            document.getElementById('install-banner').classList.remove('show');
-        });
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-
-        initSetup();
-    </script>
+initSetup();
+</script>
 </body>
 </html>
