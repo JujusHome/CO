@@ -278,6 +278,14 @@
         }
         .saved-indicator.show { opacity: 1; }
 
+        .offline-indicator {
+            position: fixed; bottom: 20px; left: 20px; padding: 10px 16px;
+            background: var(--accent-orange); color: white; border-radius: var(--radius-md);
+            font-weight: 600; font-size: 0.85rem; z-index: 100;
+            display: none;
+        }
+        .offline-indicator.show { display: block; }
+
         .running-count {
             background: var(--accent-orange);
             color: white;
@@ -347,6 +355,7 @@
 </div>
 
 <div class="saved-indicator" id="saved-indicator">✓ Sauvegardé</div>
+<div class="offline-indicator" id="offline-indicator">📵 Mode hors ligne</div>
 
 <script>
 const STORAGE_KEY = 'chronoCO_data';
@@ -370,6 +379,7 @@ const clearBtn = document.getElementById('clear-btn');
 const resumeRow = document.getElementById('resume-row');
 const groupsGrid = document.getElementById('groups-grid');
 const savedIndicator = document.getElementById('saved-indicator');
+const offlineIndicator = document.getElementById('offline-indicator');
 const runningCountEl = document.getElementById('running-count');
 
 // Types de parcours disponibles
@@ -378,6 +388,19 @@ const PARCOURS_TYPES = [
     { value: 'etoile', label: 'Étoile', icon: '⭐' },
     { value: 'papillon', label: 'Papillon', icon: '🦋' }
 ];
+
+// Détection mode hors ligne
+function updateOnlineStatus() {
+    if (!navigator.onLine) {
+        offlineIndicator.classList.add('show');
+    } else {
+        offlineIndicator.classList.remove('show');
+    }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
 
 function saveState() {
     const dataToSave = {
@@ -614,7 +637,7 @@ function initRace() {
             startTime: null,
             elapsedTime: 0,
             lastSplitStart: null,
-            currentParcours: null, // Parcours en cours
+            currentParcours: null,
             parcoursData
         });
     }
@@ -711,19 +734,15 @@ function handleParcoursClick(groupId, parcoursNum) {
     if (!group) return;
     
     if (group.isRunning) {
-        // Si en course, on change le parcours actif ou on arrête si c'est le même
         if (group.currentParcours === parcoursNum) {
-            // Arrêter sur ce parcours
             stopGroupWithParcours(groupId, parcoursNum);
         } else {
-            // Changer le parcours actif
             group.currentParcours = parcoursNum;
             updateParcoursButtons(groupId);
             updateCurrentIndicator(groupId);
             saveState();
         }
     } else {
-        // Si pas en course, démarrer sur ce parcours
         startGroup(groupId, null, parcoursNum);
     }
 }
@@ -758,7 +777,6 @@ function startGroup(groupId, sharedStartTime = null, parcoursNum = null) {
     const hasRemainingParcours = group.parcoursData.some(p => p.time === null);
     if (!hasRemainingParcours) return;
 
-    // Définir le parcours en cours
     if (parcoursNum && group.parcoursData[parcoursNum - 1].time === null) {
         group.currentParcours = parcoursNum;
     } else {
@@ -922,7 +940,6 @@ function updateCurrentIndicator(groupId) {
     }
 }
 
-// Bouton retour accueil
 document.getElementById('back-btn').addEventListener('click', () => {
     state.groups.forEach(group => {
         if (group.isRunning) {
@@ -935,7 +952,6 @@ document.getElementById('back-btn').addEventListener('click', () => {
     showSetupScreen();
 });
 
-// Démarrer tous les chronos
 document.getElementById('start-all-btn').addEventListener('click', () => {
     const now = Date.now();
     state.groups.forEach(group => {
@@ -947,12 +963,10 @@ document.getElementById('start-all-btn').addEventListener('click', () => {
     });
 });
 
-// Arrêter tous les chronos
 document.getElementById('stop-all-btn').addEventListener('click', () => {
     stopAllGroups();
 });
 
-// Export CSV
 document.getElementById('export-btn').addEventListener('click', () => {
     let csv = 'Groupe';
     for (let i = 1; i <= state.numParcours; i++) {
@@ -979,10 +993,9 @@ document.getElementById('export-btn').addEventListener('click', () => {
     link.href = url;
     link.download = `course-orientation-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
-    URL.revokeObjectURL(url);
+    URL.createObjectURL(url);
 });
 
-// Reset chronos
 document.getElementById('reset-btn').addEventListener('click', () => {
     if (confirm('Voulez-vous vraiment réinitialiser tous les chronos ? Les temps seront perdus.')) {
         initRace();
@@ -1012,6 +1025,33 @@ window.addEventListener('beforeunload', () => {
         saveState();
     }
 });
+
+// ========================================
+// ENREGISTREMENT DU SERVICE WORKER
+// ========================================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => {
+                console.log('✅ Service Worker enregistré avec succès:', registration.scope);
+                
+                // Vérifier les mises à jour
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('🔄 Nouvelle version du Service Worker détectée');
+                    
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('📥 Nouvelle version disponible, rechargez la page');
+                        }
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('❌ Erreur enregistrement Service Worker:', error);
+            });
+    });
+}
 
 initSetup();
 </script>
