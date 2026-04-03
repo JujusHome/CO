@@ -29,7 +29,7 @@ jobs:
 
       - name: Init Bubblewrap non-interactive
         run: |
-          bubblewrap init \
+          echo "n" | bubblewrap init \
             --manifest https://jujushome.github.io/CO/manifest.json \
             --directory twa-project \
             --host jujushome.github.io \
