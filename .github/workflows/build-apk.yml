@@ -27,9 +27,9 @@ jobs:
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Init Bubblewrap non-interactive
+     - name: Init Bubblewrap non-interactive
         run: |
-          echo "n" | bubblewrap init \
+          printf 'n\n\n\n\n\n\n\n\n\n' | bubblewrap init \
             --manifest https://jujushome.github.io/CO/manifest.json \
             --directory twa-project \
             --host jujushome.github.io \
