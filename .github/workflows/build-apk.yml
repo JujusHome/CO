@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -25,8 +24,7 @@ jobs:
       - name: Download launcher icon
         run: |
           mkdir -p app/src/main/res/mipmap-xxxhdpi
-          curl -L https://jujushome.github.io/CO/icon-192.png \
-            -o app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          curl -L https://jujushome.github.io/CO/icon-192.png -o app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 
       - name: Build APK
         run: gradle assembleRelease -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
@@ -34,23 +32,12 @@ jobs:
       - name: Create debug keystore
         run: |
           mkdir -p ~/.android
-          keytool -genkey -v \
-            -keystore ~/.android/debug.keystore \
-            -alias androiddebugkey \
-            -keyalg RSA -keysize 2048 \
-            -validity 10000 \
-            -storepass android \
-            -keypass android \
-            -dname "CN=Android Debug,O=Android,C=US"
+          keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
 
-     - name: Sign APK
+      - name: Sign APK
         run: |
           APKSIGNER=$(find $ANDROID_HOME/build-tools -name "apksigner" | sort -r | head -1)
-          $APKSIGNER sign \
-            --ks ~/.android/debug.keystore \
-            --ks-pass pass:android \
-            --out app/build/outputs/apk/release/app-release-signed.apk \
-            app/build/outputs/apk/release/app-release-unsigned.apk
+          $APKSIGNER sign --ks ~/.android/debug.keystore --ks-pass pass:android --out app/build/outputs/apk/release/app-release-signed.apk app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
