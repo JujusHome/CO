@@ -5,9 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,45 +12,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Bubblewrap
-        run: npm install -g @bubblewrap/cli
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-     - name: Init Bubblewrap non-interactive
-        run: |
-          printf 'n\n\n\n\n\n\n\n\n\n' | bubblewrap init \
-            --manifest https://jujushome.github.io/CO/manifest.json \
-            --directory twa-project \
-            --host jujushome.github.io \
-            --packageId io.github.jujushome.co \
-            --name "Chrono CO" \
-            --launcherName "Chrono CO" \
-            --themeColor "#1a1a2e" \
-            --backgroundColor "#0f0f1a" \
-            --startUrl /CO/index.html \
-            --iconUrl https://jujushome.github.io/CO/icon-512.png \
-            --maskableIconUrl https://jujushome.github.io/CO/icon-512.png \
-            --skipPwaValidation
-        env:
-          BUBBLEWRAP_SKIP_UPDATE_CHECK: '1'
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.4'
 
       - name: Build APK
-        working-directory: twa-project
-        run: bubblewrap build --skipPwaValidation
-        env:
-          BUBBLEWRAP_SKIP_UPDATE_CHECK: '1'
+        working-directory: twa
+        run: gradle assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: chrono-co-apk
-          path: twa-project/app-release-unsigned.apk
+          path: twa/app/build/outputs/apk/release/app-release-unsigned.apk
           retention-days: 30
