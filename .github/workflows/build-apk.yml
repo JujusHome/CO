@@ -43,13 +43,12 @@ jobs:
             -keypass android \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Sign APK
+     - name: Sign APK
         run: |
-          $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+          APKSIGNER=$(find $ANDROID_HOME/build-tools -name "apksigner" | sort -r | head -1)
+          $APKSIGNER sign \
             --ks ~/.android/debug.keystore \
             --ks-pass pass:android \
-            --key-pass pass:android \
-            --ks-alias androiddebugkey \
             --out app/build/outputs/apk/release/app-release-signed.apk \
             app/build/outputs/apk/release/app-release-unsigned.apk
 
