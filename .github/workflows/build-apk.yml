@@ -17,21 +17,23 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.4'
+          gradle-version: '8.6'
+
+      - name: Download launcher icon
+        run: |
+          mkdir -p app/src/main/res/mipmap-xxxhdpi
+          curl -L https://jujushome.github.io/CO/icon-192.png \
+            -o app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 
       - name: Build APK
-        working-directory: twa
         run: gradle assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: chrono-co-apk
-          path: twa/app/build/outputs/apk/release/app-release-unsigned.apk
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
           retention-days: 30
