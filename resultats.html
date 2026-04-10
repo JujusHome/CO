@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Résultats CO">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1a2e">
+<title>Résultats CO</title>
+<style>
+:root {
+  --bg-primary: #0f0f1a;
+  --bg-secondary: #1a1a2e;
+  --bg-card: #252542;
+  --accent-orange: #ff6b35;
+  --accent-yellow: #ffc857;
+  --accent-green: #2ec4b6;
+  --accent-blue: #3a86ff;
+  --accent-red: #ef476f;
+  --accent-purple: #9b5de5;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6b6b80;
+  --border-color: #3a3a5c;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --gold: #ffd700;
+  --silver: #c0c0c0;
+  --bronze: #cd7f32;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(255,107,53,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(46,196,182,0.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+.app { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 16px 16px 80px; }
+
+/* HEADER */
+.header { text-align: center; padding: 20px 0 28px; position: relative; }
+.header::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 3px;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
+  border-radius: 2px;
+}
+.logo {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
+.back-link {
+  position: absolute; left: 0; top: 24px;
+  color: var(--accent-purple); text-decoration: none;
+  font-weight: 600; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  transition: border-color 0.2s;
+}
+.back-link:hover { border-color: var(--accent-purple); }
+
+/* ZONE IMPORT */
+.import-zone {
+  margin: 28px 0 24px;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--bg-card);
+}
+.import-zone:hover, .import-zone.dragover {
+  border-color: var(--accent-blue);
+  background: rgba(58,134,255,0.05);
+}
+.import-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.import-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.import-sub { font-size: 0.85rem; color: var(--text-muted); }
+.import-btn {
+  display: inline-block; margin-top: 16px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, var(--accent-blue), #2d6ed9);
+  color: white; border: none; border-radius: var(--radius-md);
+  font-weight: 700; font-size: 0.95rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+#file-input { display: none; }
+
+/* SESSIONS CHARGÉES */
+.sessions-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.session-tag {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: 20px; padding: 6px 14px; font-size: 0.85rem;
+}
+.session-tag .session-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.session-tag .remove-session {
+  cursor: pointer; color: var(--text-muted); font-size: 1rem; line-height: 1;
+  transition: color 0.15s;
+}
+.session-tag .remove-session:hover { color: var(--accent-red); }
+.sessions-label { font-size: 0.85rem; color: var(--text-muted); }
+
+/* CONTROLS */
+.controls {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  margin-bottom: 20px;
+}
+.ctrl-group { display: flex; align-items: center; gap: 8px; }
+.ctrl-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.ctrl-btn {
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color); background: var(--bg-card);
+  color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.ctrl-btn.active {
+  background: var(--accent-blue); border-color: var(--accent-blue); color: white;
+}
+.ctrl-btn:hover:not(.active) { border-color: var(--accent-blue); color: var(--text-primary); }
+.ctrl-sep { width: 1px; height: 28px; background: var(--border-color); }
+.export-csv-btn {
+  margin-left: auto;
+  padding: 8px 18px; border-radius: var(--radius-sm);
+  border: none;
+  background: linear-gradient(135deg, var(--accent-green), #20a89a);
+  color: white; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* STATS RAPIDES */
+.stats-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px; margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 14px 12px; text-align: center;
+}
+.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.stat-value { font-family: 'SF Mono', Monaco, monospace; font-size: 1.3rem; font-weight: 600; color: var(--accent-yellow); }
+.stat-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
+
+/* TABLEAU */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+}
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.9rem;
+  min-width: 400px;
+}
+thead tr {
+  background: var(--bg-secondary);
+}
+th {
+  padding: 14px 16px; text-align: left;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text-muted); font-weight: 600; white-space: nowrap;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer; user-select: none;
+  transition: color 0.15s;
+}
+th:hover { color: var(--text-primary); }
+th.sorted { color: var(--accent-blue); }
+th .sort-arrow { margin-left: 4px; opacity: 0.6; font-size: 0.7rem; }
+tbody tr {
+  border-bottom: 1px solid rgba(58,58,92,0.5);
+  transition: background 0.15s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(58,134,255,0.06); }
+tbody tr.rank-1 { background: rgba(255,215,0,0.06); }
+tbody tr.rank-2 { background: rgba(192,192,192,0.05); }
+tbody tr.rank-3 { background: rgba(205,127,50,0.05); }
+td {
+  padding: 13px 16px; color: var(--text-primary);
+  white-space: nowrap;
+}
+.rank-cell {
+  font-family: Impact, 'Arial Black', sans-serif;
+  font-size: 1.1rem; letter-spacing: 1px; width: 48px;
+  text-align: center;
+}
+.rank-1 .rank-cell { color: var(--gold); }
+.rank-2 .rank-cell { color: var(--silver); }
+.rank-3 .rank-cell { color: var(--bronze); }
+.rank-other .rank-cell { color: var(--text-muted); }
+.group-cell { font-weight: 600; color: var(--accent-yellow); }
+.time-cell {
+  font-family: 'SF Mono', Monaco, monospace;
+  color: var(--text-secondary);
+}
+.time-cell.has-time { color: var(--text-primary); }
+.time-cell.missing { color: var(--text-muted); font-style: italic; }
+.total-cell {
+  font-family: 'SF Mono', Monaco, monospace;
+  font-weight: 700; color: var(--accent-orange);
+}
+.session-badge {
+  display: inline-block; width: 10px; height: 10px;
+  border-radius: 50%; margin-right: 6px; vertical-align: middle;
+}
+
+/* ÉTAT VIDE */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+.empty-state p { font-size: 0.95rem; line-height: 1.7; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--accent-green); color: white;
+  padding: 12px 20px; border-radius: var(--radius-md);
+  font-weight: 600; font-size: 0.9rem;
+  opacity: 0; transform: translateY(10px);
+  transition: all 0.3s ease; z-index: 100;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  .back-link span { display: none; }
+  .controls { gap: 8px; }
+  .export-csv-btn { margin-left: 0; width: 100%; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <a class="back-link" href="index.html">← <span>Chrono CO</span></a>
+    <h1 class="logo">RÉSULTATS</h1>
+    <p class="subtitle">Course d'Orientation EPS</p>
+  </header>
+
+  <!-- IMPORT -->
+  <div class="import-zone" id="import-zone">
+    <div class="import-icon">📂</div>
+    <div class="import-title">Importer des résultats CSV</div>
+    <div class="import-sub">Glissez-déposez un ou plusieurs fichiers CSV exportés depuis Chrono CO</div>
+    <button class="import-btn" id="import-btn-trigger">Choisir fichier(s)</button>
+  </div>
+  <input type="file" id="file-input" accept=".csv" multiple>
+
+  <!-- SESSIONS -->
+  <div class="sessions-bar" id="sessions-bar" style="display:none;">
+    <span class="sessions-label">Sessions :</span>
+    <div id="session-tags"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls" id="controls" style="display:none;">
+    <div class="ctrl-group">
+      <span class="ctrl-label">Tri</span>
+      <button class="ctrl-btn active" id="sort-total-btn" data-sort="total">⏱ Temps total</button>
+      <button class="ctrl-btn" id="sort-name-btn" data-sort="name">A→Z Groupe</button>
+    </div>
+    <div class="ctrl-sep"></div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Ordre</span>
+      <button class="ctrl-btn active" id="order-asc-btn" data-order="asc">↑ Croissant</button>
+      <button class="ctrl-btn" id="order-desc-btn" data-order="desc">↓ Décroissant</button>
+    </div>
+    <button class="export-csv-btn" id="export-merged-btn">⬇ Exporter CSV fusionné</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="stats-row" style="display:none;"></div>
+
+  <!-- TABLEAU -->
+  <div id="table-area">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🗺️</div>
+      <p>Aucun résultat chargé.<br>Importez un ou plusieurs fichiers CSV exportés depuis l'app Chrono CO.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// ÉTAT
+// ============================================================
+const SESSION_COLORS = [
+  '#3a86ff','#ff6b35','#2ec4b6','#9b5de5','#ffc857',
+  '#ef476f','#06d6a0','#f77f00','#8338ec','#fb5607'
+];
+
+let sessions = [];   // [{ id, name, color, rows: [{groupe, parcours: [{label, time}], total}] }]
+let sortKey = 'total';
+let sortOrder = 'asc';
+
+// ============================================================
+// IMPORT CSV
+// ============================================================
+document.getElementById('import-btn-trigger').addEventListener('click', () => {
+  document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', (e) => {
+  handleFiles(Array.from(e.target.files));
+  e.target.value = '';
+});
+
+const importZone = document.getElementById('import-zone');
+importZone.addEventListener('dragover', (e) => { e.preventDefault(); importZone.classList.add('dragover'); });
+importZone.addEventListener('dragleave', () => importZone.classList.remove('dragover'));
+importZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  importZone.classList.remove('dragover');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.csv'));
+  if (files.length) handleFiles(files);
+});
+
+function handleFiles(files) {
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result;
+      const session = parseCSV(text, file.name);
+      if (session) {
+        // Evite les doublons par nom de fichier
+        if (!sessions.find(s => s.name === session.name)) {
+          session.color = SESSION_COLORS[sessions.length % SESSION_COLORS.length];
+          sessions.push(session);
+        } else {
+          showToast(`"${session.name}" déjà chargé`);
+        }
+      }
+      loaded++;
+      if (loaded === files.length) render();
+    };
+    reader.readAsText(file, 'UTF-8');
+  });
+}
+
+function parseCSV(text, filename) {
+  // Détecte le séparateur (point-virgule ou virgule)
+  const sep = text.includes(';') ? ';' : ',';
+  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length < 2) return null;
+
+  const headers = lines[0].split(sep).map(h => h.trim());
+  // headers[0] = "Groupe", puis P1 (Circuit)... Pn, Temps Total
+  const parcoursHeaders = headers.slice(1, -1); // sans Groupe et Temps Total
+
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(sep).map(c => c.trim());
+    if (!cols[0]) continue;
+    const parcours = parcoursHeaders.map((label, idx) => ({
+      label,
+      time: cols[idx + 1] || '-'
+    }));
+    const total = cols[cols.length - 1] || '-';
+    rows.push({ groupe: cols[0], parcours, total });
+  }
+
+  return {
+    id: Date.now() + Math.random(),
+    name: filename.replace('.csv', ''),
+    rows
+  };
+}
+
+// ============================================================
+// RENDER PRINCIPAL
+// ============================================================
+function render() {
+  renderSessionTags();
+  renderStats();
+  renderTable();
+
+  const hasSessions = sessions.length > 0;
+  document.getElementById('sessions-bar').style.display = hasSessions ? 'flex' : 'none';
+  document.getElementById('controls').style.display = hasSessions ? 'flex' : 'none';
+  document.getElementById('stats-row').style.display = hasSessions ? 'grid' : 'none';
+  document.getElementById('empty-state').style.display = hasSessions ? 'none' : 'block';
+}
+
+// ============================================================
+// SESSIONS TAGS
+// ============================================================
+function renderSessionTags() {
+  const container = document.getElementById('session-tags');
+  container.innerHTML = '';
+  sessions.forEach(session => {
+    const tag = document.createElement('div');
+    tag.className = 'session-tag';
+    tag.innerHTML = `
+      <span class="session-dot" style="background:${session.color}"></span>
+      <span>${session.name}</span>
+      <span class="remove-session" data-id="${session.id}" title="Retirer">✕</span>
+    `;
+    container.appendChild(tag);
+  });
+  container.querySelectorAll('.remove-session').forEach(btn => {
+    btn.addEventListener('click', () => {
+      sessions = sessions.filter(s => String(s.id) !== btn.dataset.id);
+      render();
+    });
+  });
+}
+
+// ============================================================
+// STATISTIQUES
+// ============================================================
+function timeToMs(str) {
+  if (!str || str === '-' || str === '--:--') return null;
+  const parts = str.split(':');
+  if (parts.length === 2) {
+    const [min, secCs] = parts;
+    const [sec, cs] = secCs.split('.');
+    return (parseInt(min) * 60 + parseInt(sec)) * 1000 + (parseInt(cs || '0') * 10);
+  }
+  return null;
+}
+
+function getAllRows() {
+  // Fusionne toutes les sessions, ajoute une ref session
+  const all = [];
+  sessions.forEach(session => {
+    session.rows.forEach(row => {
+      all.push({ ...row, _session: session });
+    });
+  });
+  return all;
+}
+
+function renderStats() {
+  const statsEl = document.getElementById('stats-row');
+  const all = getAllRows();
+  if (!all.length) { statsEl.innerHTML = ''; return; }
+
+  const totals = all.map(r => timeToMs(r.total)).filter(t => t !== null);
+  const best = totals.length ? Math.min(...totals) : null;
+  const avg = totals.length ? totals.reduce((a,b) => a+b, 0) / totals.length : null;
+  const bestRow = best !== null ? all.find(r => timeToMs(r.total) === best) : null;
+
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Groupes</div>
+      <div class="stat-value">${all.length}</div>
+      <div class="stat-sub">${sessions.length} session${sessions.length > 1 ? 's' : ''}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Meilleur temps</div>
+      <div class="stat-value">${best !== null ? msToDisplay(best) : '-'}</div>
+      <div class="stat-sub">${bestRow ? bestRow.groupe : ''}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Temps moyen</div>
+      <div class="stat-value">${avg !== null ? msToDisplay(Math.round(avg)) : '-'}</div>
+      <div class="stat-sub">tous groupes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Parcours</div>
+      <div class="stat-value">${all[0] ? all[0].parcours.length : '-'}</div>
+      <div class="stat-sub">par groupe</div>
+    </div>
+  `;
+}
+
+function msToDisplay(ms) {
+  if (ms === null) return '-';
+  const totalSec = Math.floor(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  const cs = Math.floor((ms % 1000) / 10);
+  return `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+}
+
+// ============================================================
+// TABLEAU
+// ============================================================
+function getSortedRows() {
+  const all = getAllRows();
+
+  all.sort((a, b) => {
+    if (sortKey === 'total') {
+      const ta = timeToMs(a.total);
+      const tb = timeToMs(b.total);
+      // Les "-" vont en bas
+      if (ta === null && tb === null) return 0;
+      if (ta === null) return 1;
+      if (tb === null) return -1;
+      return sortOrder === 'asc' ? ta - tb : tb - ta;
+    } else {
+      const cmp = a.groupe.localeCompare(b.groupe, 'fr');
+      return sortOrder === 'asc' ? cmp : -cmp;
+    }
+  });
+
+  return all;
+}
+
+function renderTable() {
+  const tableArea = document.getElementById('table-area');
+  const emptyState = document.getElementById('empty-state');
+
+  if (!sessions.length) {
+    tableArea.innerHTML = '';
+    tableArea.appendChild(emptyState);
+    return;
+  }
+
+  const rows = getSortedRows();
+  // Colonnes parcours : union de tous les parcours
+  const parcoursLabels = sessions.length > 0 && sessions[0].rows.length > 0
+    ? sessions[0].rows[0].parcours.map(p => p.label)
+    : [];
+
+  // Calcul des rangs (sur temps total uniquement, ex-æquo inclus)
+  const totalsMs = rows.map(r => timeToMs(r.total));
+  const rankedTotals = [...new Set(totalsMs.filter(t => t !== null))].sort((a,b) => a-b);
+
+  let html = `
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="rank-col">#</th>
+            <th class="sorted" id="th-groupe" data-col="name">Groupe <span class="sort-arrow"></span></th>
+            ${sessions.length > 1 ? '<th>Session</th>' : ''}
+            ${parcoursLabels.map((l, i) => `<th id="th-p${i}">${escHtml(l)}</th>`).join('')}
+            <th id="th-total" data-col="total" class="${sortKey === 'total' ? 'sorted' : ''}">
+              Temps total <span class="sort-arrow">${sortKey === 'total' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  rows.forEach((row, idx) => {
+    const totalMs = timeToMs(row.total);
+    const rankPos = totalMs !== null ? rankedTotals.indexOf(totalMs) + 1 : null;
+    const rankClass = rankPos === 1 ? 'rank-1' : rankPos === 2 ? 'rank-2' : rankPos === 3 ? 'rank-3' : 'rank-other';
+    const rankLabel = rankPos === 1 ? '🥇' : rankPos === 2 ? '🥈' : rankPos === 3 ? '🥉' : (rankPos ? rankPos : '-');
+
+    html += `<tr class="${rankClass}">`;
+    html += `<td class="rank-cell">${rankLabel}</td>`;
+    html += `<td class="group-cell">${escHtml(row.groupe)}</td>`;
+    if (sessions.length > 1) {
+      html += `<td><span class="session-badge" style="background:${row._session.color}"></span>${escHtml(row._session.name)}</td>`;
+    }
+    row.parcours.forEach(p => {
+      const hasTm = p.time && p.time !== '-' && p.time !== '--:--';
+      html += `<td class="time-cell ${hasTm ? 'has-time' : 'missing'}">${hasTm ? escHtml(p.time) : '—'}</td>`;
+    });
+    html += `<td class="total-cell">${row.total && row.total !== '-' ? escHtml(row.total) : '—'}</td>`;
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  tableArea.innerHTML = html;
+  emptyState.style.display = 'none';
+
+  // Tri par clic sur en-tête
+  tableArea.querySelector('#th-groupe')?.addEventListener('click', () => setSort('name'));
+  tableArea.querySelector('#th-total')?.addEventListener('click', () => setSort('total'));
+}
+
+function setSort(key) {
+  if (sortKey === key) {
+    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortKey = key;
+    sortOrder = key === 'total' ? 'asc' : 'asc';
+  }
+  // Sync boutons
+  document.querySelectorAll('[data-sort]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sort === sortKey);
+  });
+  document.querySelectorAll('[data-order]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.order === sortOrder);
+  });
+  renderTable();
+}
+
+// Boutons tri / ordre
+document.querySelectorAll('[data-sort]').forEach(btn => {
+  btn.addEventListener('click', () => setSort(btn.dataset.sort));
+});
+document.querySelectorAll('[data-order]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    sortOrder = btn.dataset.order;
+    document.querySelectorAll('[data-order]').forEach(b => b.classList.toggle('active', b.dataset.order === sortOrder));
+    renderTable();
+  });
+});
+
+// ============================================================
+// EXPORT CSV FUSIONNÉ
+// ============================================================
+document.getElementById('export-merged-btn').addEventListener('click', () => {
+  if (!sessions.length) return;
+  const rows = getSortedRows();
+  const parcoursLabels = rows[0]?.parcours.map(p => p.label) || [];
+  const multiSession = sessions.length > 1;
+
+  let csv = 'Rang;Groupe;';
+  if (multiSession) csv += 'Session;';
+  csv += parcoursLabels.join(';') + ';Temps Total\n';
+
+  rows.forEach((row, idx) => {
+    const totalMs = timeToMs(row.total);
+    const allTotals = rows.map(r => timeToMs(r.total)).filter(t => t !== null).sort((a,b)=>a-b);
+    const rank = totalMs !== null ? allTotals.indexOf(totalMs) + 1 : '-';
+    csv += `${rank};${row.groupe};`;
+    if (multiSession) csv += `${row._session.name};`;
+    csv += row.parcours.map(p => p.time || '-').join(';') + ';' + (row.total || '-') + '\n';
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toLocaleDateString('fr-FR').replace(/\//g,'-');
+  a.href = url;
+  a.download = `CO_resultats_fusionnes_${date}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exporté !');
+});
+
+// ============================================================
+// UTILITAIRES
+// ============================================================
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
