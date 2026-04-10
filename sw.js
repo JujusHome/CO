@@ -1,69 +1,92 @@
-const CACHE_NAME = 'chrono-co-v2';
-const ASSETS = [
-    './',
-    './index.html',
-    './manifest.json',
-    './icon-192.png',
-    './icon-512.png'
+// ============================================================
+// CHRONO CO — Service Worker
+// Stratégie : Cache First + mise à jour automatique en arrière-plan
+// Changer CACHE_VERSION à chaque déploiement pour forcer la mise à jour
+// ============================================================
+
+const CACHE_VERSION = 'chrono-co-v3';
+const CACHE_NAME = CACHE_VERSION;
+
+// Fichiers à mettre en cache au premier install
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
-// Install event - cache les fichiers essentiels
+// ============================================================
+// INSTALL — mise en cache initiale
+// ============================================================
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                return cache.addAll(ASSETS);
-            })
-            .then(() => self.skipWaiting())
-    );
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
+  // 🔑 Force l'activation immédiate sans attendre la fermeture de l'app
+  self.skipWaiting();
 });
 
-// Activate event - supprime les anciens caches
+// ============================================================
+// ACTIVATE — supprime les anciens caches + prend le contrôle
+// ============================================================
 self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => self.clients.claim())
-    );
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => {
+            console.log('[SW] Suppression ancien cache :', name);
+            return caches.delete(name);
+          })
+      );
+    })
+  );
+  // 🔑 Prend le contrôle de tous les onglets ouverts immédiatement
+  self.clients.claim();
 });
 
-// Fetch event - Offline first, puis network
+// ============================================================
+// FETCH — Stratégie : Cache First avec mise à jour réseau en arrière-plan
+// (Stale While Revalidate)
+// ============================================================
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((cachedResponse) => {
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                
-                return fetch(event.request)
-                    .then((response) => {
-                        // Ne pas cacher les requêtes non-GET ou les réponses invalides
-                        if (!response || response.status !== 200 || event.request.method !== 'GET') {
-                            return response;
-                        }
-                        
-                        // Cloner la réponse pour la mettre en cache
-                        const responseToCache = response.clone();
-                        caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                cache.put(event.request, responseToCache);
-                            });
-                        
-                        return response;
-                    })
-                    .catch(() => {
-                        // Si offline et pas en cache, retourner la page principale
-                        if (event.request.mode === 'navigate') {
-                            return caches.match('./index.html');
-                        }
-                    });
-            })
-    );
+  // On ne gère que les requêtes GET
+  if (event.request.method !== 'GET') return;
+
+  // On ignore les requêtes non-http (chrome-extension, etc.)
+  if (!event.request.url.startsWith('http')) return;
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(event.request).then((cachedResponse) => {
+        // Lancement de la requête réseau en arrière-plan
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            // Met à jour le cache si la réponse est valide
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
+              cache.put(event.request, networkResponse.clone());
+            }
+            return networkResponse;
+          })
+          .catch(() => null); // Silencieux si offline
+
+        // Retourne le cache immédiatement si disponible, sinon attend le réseau
+        return cachedResponse || fetchPromise;
+      });
+    })
+  );
+});
+
+// ============================================================
+// MESSAGE — communication avec l'app principale
+// Permet à index.html de déclencher une mise à jour manuelle
+// ============================================================
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
