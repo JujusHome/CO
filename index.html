@@ -345,6 +345,17 @@ body::before {
   .control-btn { padding: 12px 16px; font-size: 0.85rem; }
   .backup-buttons { flex-direction: column; }
 }
+/* ===== BOUTON MAJ ===== */
+.backup-btn-update {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  transition: all 0.2s;
+}
+.backup-btn-update:hover { border-color: var(--accent-green); }
+.backup-btn-update.checking { border-color: var(--accent-blue); color: var(--accent-blue); }
+.backup-btn-update.up-to-date { border-color: var(--accent-green); color: var(--accent-green); }
+.backup-btn-update.needs-update { background: linear-gradient(135deg, var(--accent-orange), var(--accent-red)); border-color: transparent; color: white; }
 /* ===== BANNIERE MAJ ===== */
 .update-banner {
   position: fixed; top: 0; left: 0; right: 0; z-index: 300;
@@ -397,6 +408,10 @@ body::before {
       </div>
       <div class="backup-info" id="backup-info">Aucune sauvegarde locale détectée.</div>
       <input type="file" id="backup-file-input" accept=".json" style="display:none;">
+      <div style="margin-top:14px;border-top:1px solid var(--border-color);padding-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="backup-btn backup-btn-update" id="update-check-btn" style="flex:1;min-width:160px;">🔄 Vérifier les mises à jour</button>
+        <span id="update-status" style="font-size:0.8rem;color:var(--text-muted);flex:2;min-width:120px;">—</span>
+      </div>
     </div>
     <!-- FIN MODULE SAUVEGARDE -->
 
@@ -660,6 +675,71 @@ function applyImport(data) {
     alert('❌ Erreur lors de la restauration : ' + err.message);
   }
 }
+
+// ===== BOUTON VÉRIFIER MISES À JOUR =====
+document.getElementById('update-check-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('update-check-btn');
+  const status = document.getElementById('update-status');
+
+  if (!('serviceWorker' in navigator)) {
+    status.textContent = '⚠️ Service Worker non supporté sur ce navigateur.';
+    return;
+  }
+
+  btn.textContent = '⏳ Vérification…';
+  btn.className = 'backup-btn backup-btn-update checking';
+  status.textContent = 'Recherche d'une nouvelle version…';
+
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (!reg) {
+      status.textContent = '⚠️ Aucun Service Worker enregistré. Rechargez la page.';
+      btn.textContent = '🔄 Vérifier les mises à jour';
+      btn.className = 'backup-btn backup-btn-update';
+      return;
+    }
+
+    await reg.update();
+
+    if (reg.waiting) {
+      // Une version est déjà en attente → mise à jour dispo
+      applyUpdate(reg, btn, status);
+    } else if (reg.installing) {
+      // Installation en cours → attendre
+      reg.installing.addEventListener('statechange', (e) => {
+        if (e.target.state === 'installed') {
+          applyUpdate(reg, btn, status);
+        }
+      });
+    } else {
+      // Déjà à jour
+      btn.textContent = '✅ À jour';
+      btn.className = 'backup-btn backup-btn-update up-to-date';
+      status.textContent = 'Vous utilisez la dernière version de Chrono CO.';
+      setTimeout(() => {
+        btn.textContent = '🔄 Vérifier les mises à jour';
+        btn.className = 'backup-btn backup-btn-update';
+        status.textContent = '—';
+      }, 3000);
+    }
+  } catch (err) {
+    status.textContent = '❌ Erreur : ' + err.message;
+    btn.textContent = '🔄 Vérifier les mises à jour';
+    btn.className = 'backup-btn backup-btn-update';
+  }
+});
+
+function applyUpdate(reg, btn, status) {
+  btn.textContent = '⬆ Mise à jour disponible — Appuyer pour installer';
+  btn.className = 'backup-btn backup-btn-update needs-update';
+  status.textContent = 'Une nouvelle version est prête. L'app va se recharger.';
+  btn.onclick = () => {
+    const sw = reg.waiting || reg.installing;
+    if (sw) sw.postMessage({ type: 'SKIP_WAITING' });
+    else window.location.reload();
+  };
+}
+// ===== FIN BOUTON MAJ =====
 
 // Bouton export
 document.getElementById('backup-export-btn').addEventListener('click', exportBackup);
