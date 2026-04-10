@@ -110,12 +110,28 @@ body::before {
   padding-right: 36px;
 }
 .type-select:focus { outline: none; border-color: var(--accent-blue); }
-.beacons-input { display: flex; align-items: center; gap: 8px; }
-.beacons-input input {
-  width: 70px; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
-  background: var(--bg-card); color: var(--text-primary); text-align: center; font-size: 1rem;
+.beacons-input { display: flex; align-items: center; gap: 0; }
+.beacons-input .beacons-label { font-size: 0.85rem; color: var(--text-secondary); margin-right: 10px; }
+.beacons-btn {
+  width: 38px; height: 38px; border: 1px solid var(--border-color);
+  background: var(--bg-secondary); color: var(--text-primary);
+  font-size: 1.3rem; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; user-select: none; -webkit-user-select: none;
+  flex-shrink: 0;
 }
-.beacons-input input:disabled { opacity: 0.4; }
+.beacons-btn:first-of-type { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.beacons-btn:last-of-type  { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.beacons-btn:active { background: var(--accent-orange); border-color: var(--accent-orange); }
+.beacons-value {
+  width: 52px; height: 38px;
+  border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
+  background: var(--bg-card); color: var(--text-primary);
+  text-align: center; font-size: 1rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'SF Mono', Monaco, monospace;
+  flex-shrink: 0;
+}
 .no-parcours { color: var(--text-muted); font-style: italic; }
 .buttons-row {
   display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 600px;
@@ -861,20 +877,39 @@ function renderParcoursConfig() {
       <div class="parcours-label">Parcours ${index + 1}</div>
       <select class="type-select" data-index="${index}">${optionsHTML}</select>
       <div class="beacons-input">
-        <span>Balises</span>
-        <input type="number" min="1" max="50" value="${cfg.beacons}">
+        <span class="beacons-label">Balises</span>
+        <button class="beacons-btn beacons-minus" type="button">−</button>
+        <div class="beacons-value">${cfg.beacons}</div>
+        <button class="beacons-btn beacons-plus" type="button">+</button>
       </div>
     `;
     const select = row.querySelector('.type-select');
-    const beaconsInput = row.querySelector('input');
+    const beaconsValue = row.querySelector('.beacons-value');
+    const minusBtn = row.querySelector('.beacons-minus');
+    const plusBtn = row.querySelector('.beacons-plus');
+
     select.addEventListener('change', () => {
       cfg.type = select.value;
       updateStartButton();
     });
-    beaconsInput.addEventListener('input', () => {
-      const val = parseInt(beaconsInput.value, 10);
-      cfg.beacons = isNaN(val) ? 1 : Math.max(1, val);
-      updateStartButton();
+
+    function updateBeaconsDisplay() {
+      beaconsValue.textContent = cfg.beacons;
+    }
+
+    minusBtn.addEventListener('click', () => {
+      if (cfg.beacons > 1) {
+        cfg.beacons--;
+        updateBeaconsDisplay();
+        updateStartButton();
+      }
+    });
+    plusBtn.addEventListener('click', () => {
+      if (cfg.beacons < 50) {
+        cfg.beacons++;
+        updateBeaconsDisplay();
+        updateStartButton();
+      }
     });
     parcoursConfigEl.appendChild(row);
   });
