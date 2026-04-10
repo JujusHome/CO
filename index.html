@@ -688,7 +688,7 @@ document.getElementById('update-check-btn').addEventListener('click', async () =
 
   btn.textContent = '⏳ Vérification…';
   btn.className = 'backup-btn backup-btn-update checking';
-  status.textContent = 'Recherche d'une nouvelle version…';
+  status.textContent = "Recherche d'une nouvelle version…";
 
   try {
     const reg = await navigator.serviceWorker.getRegistration();
@@ -732,7 +732,7 @@ document.getElementById('update-check-btn').addEventListener('click', async () =
 function applyUpdate(reg, btn, status) {
   btn.textContent = '⬆ Mise à jour disponible — Appuyer pour installer';
   btn.className = 'backup-btn backup-btn-update needs-update';
-  status.textContent = 'Une nouvelle version est prête. L'app va se recharger.';
+  status.textContent = "Une nouvelle version est prête. L'app va se recharger.";
   btn.onclick = () => {
     const sw = reg.waiting || reg.installing;
     if (sw) sw.postMessage({ type: 'SKIP_WAITING' });
